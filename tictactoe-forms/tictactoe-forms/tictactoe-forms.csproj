@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RootNamespace>tictactoe_forms</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\Images\cross.png" />
+    <None Remove="Content\Images\exitD.png" />
+    <None Remove="Content\Images\exitN.png" />
+    <None Remove="Content\Images\menu.png" />
+    <None Remove="Content\Images\menuD.png" />
+    <None Remove="Content\Images\menuN.png" />
+    <None Remove="Content\Images\moon.png" />
+    <None Remove="Content\Images\p0.png" />
+    <None Remove="Content\Images\p1.png" />
+    <None Remove="Content\Images\p2.png" />
+    <None Remove="Content\Images\return.png" />
+    <None Remove="Content\Images\returnD.png" />
+    <None Remove="Content\Images\returnN.png" />
+    <None Remove="Content\Images\sun.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Content\Images\exitD.png" />
+    <Resource Include="Content\Images\exitN.png" />
+    <Resource Include="Content\Images\menuD.png" />
+    <Resource Include="Content\Images\menuN.png" />
+    <Resource Include="Content\Images\moon.png" />
+    <Resource Include="Content\Images\p0.png" />
+    <Resource Include="Content\Images\p1.png" />
+    <Resource Include="Content\Images\cross.png" />
+    <Resource Include="Content\Images\p2.png" />
+    <Resource Include="Content\Images\returnD.png" />
+    <Resource Include="Content\Images\returnN.png" />
+    <Resource Include="Content\Images\sun.png" />
+  </ItemGroup>
+
+</Project>

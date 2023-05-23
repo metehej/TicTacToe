@@ -1,0 +1,835 @@
+﻿<Window x:Class="tictactoe_forms.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TTT Mk1" Height="507" Width="302" Icon="Content/Images/cross.png"
+        MinHeight="611" MinWidth="496" WindowStartupLocation="CenterScreen"
+        Grid.IsSharedSizeScope="True"
+        Closing="WindowClosing"
+        Name="windowGame" Background="LightGray">
+    <Window.Resources>
+
+        <!-- DAY -->
+        <!-- button style for controls -->
+        <Style x:Key="buttonStyleDay" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Background" Value="#b9b9b9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontFamily" Value="Segoe Ui"/>
+            <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=dayNightGrid}"/>
+            <Setter Property="MaxWidth" Value="{Binding ActualHeight, ElementName=dayNightGrid}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid MaxHeight="95" MaxWidth="95">
+                            <Border Name="buttonBorder" BorderBrush="Black" BorderThickness="2" Background="{TemplateBinding Background}" CornerRadius="4">
+                                <TextBlock Name="buttonText" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="{TemplateBinding FontSize}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </TextBlock>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2.65"/>
+                                <Setter Property="Background" Value="#c1c1c1"/>
+                                <Setter Property="FontSize" Value="25"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="#a6a6a6"/>
+                                <Setter Property="FontSize" Value="23"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95"  ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- button style when on -->
+        <Style x:Key="buttonStyleOnDay" x:Name="buttonStyleOnDay" BasedOn="{StaticResource ResourceKey=buttonStyleDay}" TargetType="Button">
+            <Setter Property="Background" Value="#b4be96"/>
+            <Setter Property="Foreground" Value="#000000"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid MaxHeight="95" MaxWidth="95">
+                            <Border Name="buttonBorder" BorderBrush="Black" BorderThickness="2" Background="{TemplateBinding Background}" CornerRadius="4">
+                                <TextBlock Name="buttonText" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </TextBlock>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2.65"/>
+                                <Setter Property="Background" Value="#c8d2aa"/>
+                                <Setter Property="FontSize" Value="25"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="#8c966e"/>
+                                <Setter Property="FontSize" Value="23"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95"  ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- button style when off -->
+        <Style x:Key="buttonStyleOffDay"  BasedOn="{StaticResource ResourceKey=buttonStyleDay}" TargetType="Button">
+            <Setter Property="Background" Value="#c47f7e"/>
+            <Setter Property="Foreground" Value="#000000"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid MaxHeight="95" MaxWidth="95">
+                            <Border Name="buttonBorder" BorderBrush="Black" BorderThickness="2" Background="{TemplateBinding Background}" CornerRadius="4">
+                                <TextBlock Name="buttonText" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </TextBlock>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2.65"/>
+                                <Setter Property="Background" Value="#ca8584"/>
+                                <Setter Property="FontSize" Value="25"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="#b36e6d"/>
+                                <Setter Property="FontSize" Value="23"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95"  ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- play button style when neithers -->
+        <Style x:Key="playButtonCan" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Background" Value="#b0b0b0"/>
+            <Setter Property="Cursor" Value="Pen"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderBrush="Black" BorderThickness="0.75" Name="playButtonBorder" Background="{TemplateBinding Background}" Padding="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="playButtonBorder" Property="BorderThickness" Value="3"/>
+                                <Setter TargetName="playButtonBorder" Property="BorderBrush" Value="#38a63c"/>
+                                <Setter TargetName="playButtonBorder" Property="Padding" Value="3.75"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="playButtonBorder" Property="BorderBrush" Value="#38a63c"/>
+                                <Setter TargetName="playButtonBorder" Property="BorderThickness" Value="4.5"/>
+                                <Setter TargetName="playButtonBorder" Property="Padding" Value="0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- play button style when opponents -->
+        <Style x:Key="playButtonCant" TargetType="Button" BasedOn="{StaticResource ResourceKey=playButtonCan}">
+            <Setter Property="Background" Value="#b8a0a0"/>
+            <Setter Property="Cursor" Value="No"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderBrush="Black" BorderThickness="0.75" Name="playButtonBorder" Background="{TemplateBinding Background}" Padding="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="playButtonBorder" Property="BorderThickness" Value="3"/>
+                                <Setter TargetName="playButtonBorder" Property="BorderBrush" Value="#a6383c"/>
+                                <Setter TargetName="playButtonBorder" Property="Background" Value="#aa8282" />
+                                <Setter TargetName="playButtonBorder" Property="Padding" Value="0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- play button style when owns -->
+        <Style x:Key="playButtonOwns" TargetType="Button" BasedOn="{StaticResource ResourceKey=playButtonCant}">
+            <Setter Property="Background" Value="#a0b8a0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderBrush="Black" BorderThickness="0.75" Name="playButtonBorder" Background="{TemplateBinding Background}" Padding="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="playButtonBorder" Property="BorderThickness" Value="3"/>
+                                <Setter TargetName="playButtonBorder" Property="BorderBrush" Value="#a6383c"/>
+                                <Setter TargetName="playButtonBorder" Property="Background" Value="#82aa82" />
+                                <Setter TargetName="playButtonBorder" Property="Padding" Value="0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Textblock style Day -->
+        <Style x:Key="textStyleDay" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe Ui"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        
+        <!-- NIGHT -->
+        <!-- button style for controls -->
+        <Style x:Key="buttonStyleNight" x:Name="buttonStyleNight" TargetType="Button" BasedOn="{StaticResource ResourceKey=buttonStyleDay}">
+            <Setter Property="Background" Value="#464646"/>
+            <Setter Property="Foreground" Value="#dfdfdf"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid MaxHeight="95" MaxWidth="95">
+                            <Border Name="buttonBorder" BorderBrush="#dfdfdf" BorderThickness="2" Background="{TemplateBinding Background}" CornerRadius="4">
+                                <TextBlock Name="buttonText" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="{TemplateBinding FontSize}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </TextBlock>
+                            </Border> 
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2.65"/>
+                                <Setter Property="Background" Value="#4e4e4e"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="#333333"/>
+                                <Setter Property="FontSize" Value="17"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95"  ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- button style when on -->
+        <Style x:Key="buttonStyleOnNight" x:Name="buttonStyleOnNight" BasedOn="{StaticResource ResourceKey=buttonStyleDay}" TargetType="Button">
+            <Setter Property="Background" Value="#5a8c5a"/>
+            <Setter Property="Foreground" Value="#dfdfdf"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid MaxHeight="95" MaxWidth="95">
+                            <Border Name="buttonBorder" BorderBrush="#dfdfdf" BorderThickness="2" Background="{TemplateBinding Background}" CornerRadius="4">
+                                <TextBlock Name="buttonText" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </TextBlock>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2.65"/>
+                                <Setter Property="Background" Value="#6ea06e"/>
+                                <Setter Property="FontSize" Value="25"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="#326432"/>
+                                <Setter Property="FontSize" Value="23"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95"  ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- button style when off -->
+        <Style x:Key="buttonStyleOffNight"  BasedOn="{StaticResource ResourceKey=buttonStyleDay}" TargetType="Button">
+            <Setter Property="Background" Value="#8c6464"/>
+            <Setter Property="Foreground" Value="#dfdfdf"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid MaxHeight="95" MaxWidth="95">
+                            <Border Name="buttonBorder" BorderBrush="#dfdfdf" BorderThickness="2" Background="{TemplateBinding Background}" CornerRadius="4">
+                                <TextBlock Name="buttonText" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </TextBlock>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2.65"/>
+                                <Setter Property="Background" Value="#a07878"/>
+                                <Setter Property="FontSize" Value="25"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="#643c3c"/>
+                                <Setter Property="FontSize" Value="25"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95"  ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Textblock style night -->
+        <Style x:Key="textStyleNight" TargetType="TextBlock" BasedOn="{StaticResource ResourceKey=textStyleDay}">
+            <Setter Property="Foreground" Value="#dfdfdf"/>
+        </Style>
+        
+        <!-- button disable -->
+        <Style x:Key="buttOff" TargetType="Button">
+            <Setter Property="Cursor" Value="No"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Background" Value="#b0b0b0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderBrush="Black" BorderThickness="0.75" Name="playButtonBorder" Background="{TemplateBinding Background}" Padding="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+    <Border Name="innerWindow" Visibility="Visible">
+        <Grid>
+            <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+            <!-- GAME -->
+            <Grid Name="mainGrid" ShowGridLines="False" Height="{Binding ActualHeight, ElementName=innerWindow}"  Width="{Binding ActualWidth, ElementName=innerWindow}" MaxWidth="{Binding ActualHeight, ElementName=innerWindow}" Panel.ZIndex="1" Background="{Binding ElementName=windowGame, Path=Background}">
+                <Grid.Effect>
+                    <BlurEffect Radius="0" KernelType="Gaussian"/>
+                </Grid.Effect>
+                <!--#region definitions -->
+                <!-- defining columns and rows -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.25*" MinWidth="10" MaxWidth="30"/>
+                    <ColumnDefinition Width="2*" MinWidth="92"/>
+                    <ColumnDefinition Width="6*" MinWidth="276"/>
+                    <ColumnDefinition Width="2*" MinWidth="92"/>
+                    <ColumnDefinition Width="0.25*" MinWidth="10" MaxWidth="30"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.25*" MaxHeight="30" MinHeight="10"/>
+                    <RowDefinition Height="*" MinHeight="92"/>
+                    <RowDefinition Height="6*" MinHeight="276" MaxHeight="480"/>
+                    <RowDefinition Height="*" MinHeight="92"/>
+                    <RowDefinition Height="*" MinHeight="92"/>
+                    <RowDefinition Height="0.25*" MaxHeight="30" MinHeight="10"/>
+                </Grid.RowDefinitions>
+                <!--#endregion-->
+
+                <!--#region elements -->
+
+                <!--#region timer, night/day mode button and exit button -->
+                <Grid Name="upperGameGrid" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3">
+                    <!-- defining columns and rows -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- grid for day/night mode button -->
+                    <Grid Grid.Column="0" Name="dayNightGrid">
+                        <Border MaxHeight="{Binding ActualWidth, ElementName=dayNightGrid}"
+                MaxWidth="{Binding ActualHeight, ElementName=dayNightGrid}">
+                            <Border  Margin="10" Name="dayNightBorder">
+                                <Button Style="{DynamicResource ResourceKey=buttonStyleDay}" Height="{Binding ActualWidth, ElementName=dayNightBorder}" Width="{Binding ActualHeight, ElementName=dayNightBorder}" Click="DayNightButton_Click" Name="dayNightButton" MouseEnter="DayNightButton_MouseEnter" MouseLeave="Element_MouseLeave">
+                                    <Image Source="Content/Images/sun.png" Stretch="UniformToFill" Margin="5" Name="dayNightButtonImage"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Button>
+                            </Border>
+                        </Border>
+
+                    </Grid>
+
+                    <!-- grid for timer -->
+                    <Grid Grid.Column="1" Name="timerGrid" Visibility="Hidden">
+                        <!-- defining columns and rows -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <!-- adding text block, bind to data later in future -->
+                    </Grid>
+
+                    <!-- grid for Exit button -->
+                    <Grid Grid.Column="2" Name="exitButtonGrid">
+                        <Border MaxHeight="{Binding ActualWidth, ElementName=exitButtonGrid}"
+                MaxWidth="{Binding ActualHeight, ElementName=exitButtonGrid}">
+                            <Border  Margin="10" Name="exitButtonBorder">
+                                <Button Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=exitButtonBorder}" Width="{Binding ActualHeight, ElementName=exitButtonBorder}" Click="Exit_Button_Click" Name="exitButton" MouseLeave="Element_MouseLeave" MouseEnter="ExitButton_MouseEnter">
+                                    <Image Source="Content/Images/exitD.png" Stretch="UniformToFill" Margin="5" Name="exitButtonImage"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Button>
+                            </Border>
+                        </Border>
+                    </Grid>
+                </Grid>
+                <!--#endregion-->
+
+                <!--#region names, counts -->
+                <!-- grid for player 1 name -->
+                <Grid Name="p1NameGrid" Grid.Column="1" Grid.Row="2">
+                    <!-- max name length is 17 -->
+                    <TextBlock Name="p1Name"  HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=P1Name, UpdateSourceTrigger=PropertyChanged}" Style="{Binding ElementName=statLine, Path=Style}" FontSize="30">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Grid>
+
+                <!-- grid for player 2 name -->
+                <Grid Name="p2NameGrid" Grid.Column="3" Grid.Row="2">
+                    <!-- max name length is 17 -->
+                    <TextBlock Name="p2Name"  HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=P2Name, UpdateSourceTrigger=PropertyChanged}" Style="{Binding ElementName=statLine, Path=Style}" FontSize="30">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Grid>
+
+                <!-- grid for player 1 symbol -->
+                <Grid Grid.Column="1" Grid.Row="3" Name="p1SymbolGrid">
+                    <!-- double border for resizing purposes -->
+                    <Border MaxHeight="{Binding ActualWidth, ElementName=p1SymbolGrid}"
+                MaxWidth="{Binding ActualHeight, ElementName=p1SymbolGrid}">
+                        <Border BorderBrush="Black" CornerRadius="3" BorderThickness="2" Margin="10" Background="#b3b5bd" Name="p1SymbolBorder">
+                            <Image Source="{Binding Path=P1Image, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Margin="5"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Border>
+                </Grid>
+
+                <!-- grid for player 2 symbol -->
+                <Grid Grid.Column="3" Grid.Row="3" Name="p2SymbolGrid">
+                    <Border MaxHeight="{Binding ActualWidth, ElementName=p2SymbolGrid}"
+                MaxWidth="{Binding ActualHeight, ElementName=p2SymbolGrid}">
+                        <Border BorderBrush="Black" CornerRadius="3" BorderThickness="2" Margin="10" Background="#b3b5bd" Name="p2SymbolBorder">
+                            <Image Source="{Binding Path=P2Image, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Margin="5"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Border>
+                </Grid>
+                <!--#endregion-->
+
+                <!-- grid for scores and reset button -->
+                <Grid Grid.Column="2" Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- player1 count -->
+                    <TextBlock x:Name="p1Count" Grid.Column="0" HorizontalAlignment="Center" Style="{Binding ElementName=statLine, Path=Style}" TextWrapping="Wrap" Text="{Binding Path=WinsPlayers[0], UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" FontSize="48" Padding="0,0,0,8"/>
+
+                    <!-- reset button -->
+                    <Button x:Name="resetButt" Grid.Column="1" Style="{Binding ElementName=dayNightButton,Path=Style}" Click="Reset_Button_Click">
+                        <TextBlock Style="{Binding ElementName=statLine, Path=Style}" FontSize="18" Padding="5,10" Text="Reset"/>
+                    </Button>
+
+                    <!-- player2 count -->
+                    <TextBlock x:Name="p2Count" Grid.Column="2" Style="{Binding ElementName=statLine, Path=Style}" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=WinsPlayers[1], UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" FontSize="48" Padding="0,0,0,8"/>
+
+                </Grid>
+
+                <!-- grid for menu button -->
+                <Grid Grid.Column="1" Grid.Row="4" Name="menuButtonGrid">
+                    <Border MaxHeight="{Binding ActualWidth, ElementName=menuButtonGrid}"
+                MaxWidth="{Binding ActualHeight, ElementName=menuButtonGrid}">
+                        <Border  Margin="10" Name="menuButtonBorder">
+                            <Button Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=menuButtonBorder}" Width="{Binding ActualHeight, ElementName=menuButtonBorder}" Click="Menu_Button_Click" Name="menuButton" MouseLeave="Element_MouseLeave" MouseEnter="MenuButton_MouseEnter">
+                                <Image Source="Content/Images/menuD.png" Stretch="UniformToFill" Margin="5" Name="menuButtonImage"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Button>
+                        </Border>
+                    </Border>
+                </Grid>
+
+                <!-- grid for status line -->
+                <Grid Grid.Column="2" Grid.Row="4" Name="statLineGrid" ShowGridLines="False">
+                    <!-- defining columns and rows -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!-- text block -->
+                    <StackPanel Orientation="Vertical" Width="{Binding ActualWidth, ElementName=playArea}" Grid.Row="1" Grid.Column="1">
+                        <TextBlock x:Name="statLine" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Style="{DynamicResource textStyleDay}" Text="{Binding Path=StatLine, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- grid for AI button -->
+                <Grid Grid.Column="3" Grid.Row="4" Name="aiButtonGrid">
+                    <Border MaxHeight="{Binding ActualWidth, ElementName=aiButtonGrid}"
+                MaxWidth="{Binding ActualHeight, ElementName=aiButtonGrid}">
+                        <Border  Margin="10" Name="aiButtonBorder">
+                            <Button Name="aiButton" Style="{DynamicResource buttonStyleOffDay}" Height="{Binding ActualWidth, ElementName=menuButtonBorder}" Width="{Binding ActualHeight, ElementName=menuButtonBorder}" Click="ButtonAI_Click">
+                                <TextBlock Margin="5">AI</TextBlock>
+                            </Button>
+                        </Border>
+                    </Border>
+                </Grid>
+
+
+                <!-- game grid -->
+                <Grid Name="gameGrid" Grid.Column="2" Grid.Row="2">
+                    <Border BorderBrush="Black" BorderThickness="1" Name="playArea" CornerRadius="3"
+                    MaxHeight="{Binding ActualWidth, ElementName=gameGrid}" 
+                    MaxWidth="{Binding ActualHeight, ElementName=gameGrid}">
+                        <UniformGrid Name="playAreaGrid" Background="Black"/>
+                    </Border>
+                </Grid>
+                <!--#endregion-->
+            </Grid>
+
+
+
+            <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+            <!-- MENU -->
+            <Grid Name="menuGrid" Height="{Binding ActualHeight, ElementName=innerWindow}" Width="{Binding ActualWidth, ElementName=innerWindow}" MaxWidth="{Binding ActualHeight, ElementName=innerWindow}" Panel.ZIndex="0" Background="{Binding ElementName=windowGame, Path=Background}">
+                <!--#region definitions -->
+                <!-- defining columns and rows -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.25*" MinWidth="10" MaxWidth="30"/>
+                    <ColumnDefinition Width="2*" MinWidth="92"/>
+                    <ColumnDefinition Width="6*" MinWidth="276"/>
+                    <ColumnDefinition Width="2*" MinWidth="92"/>
+                    <ColumnDefinition Width="0.25*" MinWidth="10" MaxWidth="30"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.25*" MaxHeight="30" MinHeight="10"/>
+                    <RowDefinition Height="*" MinHeight="92"/>
+                    <RowDefinition Height="6*" MinHeight="276" MaxHeight="480"/>
+                    <RowDefinition Height="*" MinHeight="92"/>
+                    <RowDefinition Height="*" MinHeight="92"/>
+                    <RowDefinition Height="0.25*" MaxHeight="30" MinHeight="10"/>
+                </Grid.RowDefinitions>
+                <!--#endregion-->
+
+                <!-- the top part of menu. two elements are moved here by code -->
+                <Grid Name="upperMenuGrid" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3">
+                    <!-- defining columns and rows -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="1" Name="settingsTagGrid">
+                        <!-- defining columns and rows -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <!-- text block -->
+                        <StackPanel Orientation="Vertical" Width="{Binding ActualWidth, ElementName=settingsGrid}" Grid.Row="1" Grid.Column="1">
+                            <TextBlock x:Name="settingsTag" FontSize="40" TextDecorations="Underline"  VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Style="{Binding ElementName=statLine, Path=Style}" Text="Settings"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                
+                
+                <!--#region symbol buttons -->
+                
+
+                
+                <!--#endregion-->
+
+                <!-- settings panel -->
+                <Grid Name="settingsGrid" Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Margin="0, 0, 0, 10" >
+                    <Border BorderThickness="2" Name="settingsArea"
+                    MaxWidth="276" Background="#b0b0b0" CornerRadius="3">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Name="settingsScrollViewer">
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Top">
+                                <!--#region styles -->
+                                <StackPanel.Resources>
+                                    <!-- border style for between settings -->
+                                    <Style x:Key="settingBorder" TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="{Binding ElementName=settingsArea, Path=BorderBrush}"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                        <Setter Property="Width" Value="276"/>
+                                        <Setter Property="Height" Value="2"/>
+                                        <Setter Property="Margin" Value="-2, 0"/>
+                                    </Style>
+                                    <!-- textblock style for slider type settings-->
+                                    <Style x:Key="settingsText" TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalAlignment" Value="Bottom"/>
+                                        <Setter Property="Foreground" Value="{Binding ElementName=statLine, Path=Foreground}"/>
+                                        <Setter Property="FontSize" Value="20"/>
+                                        <Setter Property="FontWeight" Value="Light"/>
+                                    </Style>
+                                    <!-- slider style for slider type settings -->
+                                    <Style x:Key="sliderSettingsSlider" TargetType="Slider">
+                                        <Setter Property="IsSnapToTickEnabled" Value="True"/>
+                                        <Setter Property="Orientation" Value="Horizontal"/>
+                                        <Setter Property="TickFrequency" Value="1"/>
+                                        <Setter Property="TickPlacement" Value="BottomRight"/>
+                                        <Setter Property="Foreground" Value="{Binding ElementName=settingsArea,Path=BorderBrush}"/>
+                                        <Setter Property="Height" Value="22"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="MinWidth" Value="100"/>
+                                    </Style>
+                                    <!-- textblock style for number next to the slider for slider type settings -->
+                                    <Style x:Key="sliderSettingsNumber" TargetType="TextBlock" BasedOn="{StaticResource ResourceKey=settingsText}">
+                                        <Setter Property="FontSize" Value="17"/>
+                                        <Setter Property="TextDecorations" Value="None"/>
+                                        <Setter Property="VerticalAlignment" Value="Top"/>
+                                    </Style>
+                                    <!-- textbox style for name text boxes -->
+                                    <Style x:Key="nameTextBox" TargetType="TextBox">
+                                        <Setter Property="MaxLength" Value="12"/>
+                                        <Setter Property="Background" Value="#afafaf"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="FontSize" Value="20"/>
+                                        <Setter Property="FontWeight" Value="DemiBold"/>
+                                        <Setter Property="Width" Value="170"/>
+                                        <Setter Property="Height" Value="40"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="FontSize" Value="22"/>
+                                                <Setter Property="Background" Value="LightGray"/>
+                                            </Trigger>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="FontSize" Value="22"/>
+                                                <Setter Property="Background" Value="LightGray"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <!-- border style for name text boxes -->
+                                    <Style x:Key="nameTextBoxBorder" TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                        <Setter Property="BorderBrush" Value="Black"/>
+                                        <Setter Property="CornerRadius" Value="3"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <!--#endregion-->
+                                
+                                <!--#region elements -->
+                                <!--#region game settings-->
+                                <!-- header -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="12"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="6"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Game:" Style="{DynamicResource ResourceKey=settingsText}" TextDecorations="Underline" FontSize="25" FontWeight="DemiBold"/>
+                                </Grid>
+                                <!-- gridSideSize setter -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="10"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="25"/>
+                                        <RowDefinition Height="5"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="6"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Grid size:" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Style="{DynamicResource ResourceKey=settingsText}"/>
+                                    <Slider Grid.Column="1" Grid.Row="3" Minimum="3" Maximum="13" Value="{Binding Path=GridSideSize, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseEnter="GridSideSizeChange_MouseEnter" MouseLeave="Element_MouseLeave" Style="{DynamicResource ResourceKey=sliderSettingsSlider}"/>
+                                    <TextBlock Text="{Binding Path=GridSideSize, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="3" Style="{DynamicResource ResourceKey=sliderSettingsNumber}" Width="auto"/>
+                                </Grid>
+                                <!-- inLineForWin setter -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="10"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="25"/>
+                                        <RowDefinition Height="5"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="12"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Fields in line for win:" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Style="{DynamicResource ResourceKey=settingsText}"/>
+                                    <Slider Grid.Column="1" Grid.Row="3" Minimum="3" Maximum="13" Value="{Binding Path=InLineForWin, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseEnter="InLineForWinChange_MouseEnter" MouseLeave="Element_MouseLeave" Style="{DynamicResource ResourceKey=sliderSettingsSlider}"/>
+                                    <TextBlock Text="{Binding Path=InLineForWin, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="3" Style="{DynamicResource ResourceKey=sliderSettingsNumber}"/>
+                                </Grid>
+                                <Border Style="{DynamicResource ResourceKey=settingBorder}"/>
+                                <!--#endregion -->
+                                <!--#region player 1 settings -->
+                                <!-- header -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="12"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="6"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Player 1:" Style="{DynamicResource ResourceKey=settingsText}" TextDecorations="Underline" FontSize="25" FontWeight="DemiBold"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="10"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="60"/>
+                                        <RowDefinition Height="6"/>
+                                    </Grid.RowDefinitions>
+                                    <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ResourceKey=nameTextBoxBorder}" Width="{Binding ElementName=p1NameBox, Path=ActualWidth}" Height="{Binding ElementName=p1NameBox, Path=ActualHeight}">
+                                        <TextBox x:Name="p1NameBox" Style="{DynamicResource ResourceKey=nameTextBox}" Text="{Binding Path=P1Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseLeave="NameChange_MouseLeave" BorderBrush="Transparent"/>
+                                    </Border>
+                                    <!-- grid for player 1 symbol -->
+                                    <Grid Grid.Column="3" Grid.Row="1" Name="p1SymChangeGrid">
+                                        <Border MaxHeight="{Binding ActualWidth, ElementName=p1SymChangeGrid}" MaxWidth="{Binding ActualHeight, ElementName=p1SymChangeGrid}">
+                                            <Border  Margin="0" Name="p1SymChangeBorder">
+                                                <Button Name="p1SymChangeButton"  Tag="1" Background="#afafaf" Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=p1SymChangeBorder}" Width="{Binding ActualHeight, ElementName=p1SymChangeBorder}" MouseEnter="SymChangeButton_MouseEnter" MouseLeave="Element_MouseLeave" Click="SymChangeButton_Click">
+                                                    <Image Source="{Binding Path=P1Image, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Button>
+                                            </Border>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                                <Border Style="{DynamicResource ResourceKey=settingBorder}"/>
+                                <!--#region player 2 settings -->
+                                <!-- header -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="12"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="6"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Player 2:" Style="{DynamicResource ResourceKey=settingsText}" TextDecorations="Underline" FontSize="25" FontWeight="DemiBold"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="10"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="60"/>
+                                        <RowDefinition Height="6"/>
+                                    </Grid.RowDefinitions>
+                                    <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ResourceKey=nameTextBoxBorder}" Width="{Binding ElementName=p2NameBox, Path=ActualWidth}" Height="{Binding ElementName=p2NameBox, Path=ActualHeight}">
+                                        <TextBox x:Name="p2NameBox" Style="{DynamicResource ResourceKey=nameTextBox}" Text="{Binding Path=P2Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseLeave="NameChange_MouseLeave" BorderBrush="Transparent"/>
+                                    </Border>
+                                    <!-- grid for player 2 symbol -->
+                                    <Grid Grid.Column="3" Grid.Row="1" Name="p2SymChangeGrid">
+                                        <Border MaxHeight="{Binding ActualWidth, ElementName=p2SymChangeGrid}" MaxWidth="{Binding ActualHeight, ElementName=p2SymChangeGrid}">
+                                            <Border  Margin="10" Name="p2SymChangeBorder" BorderBrush="{Binding ElementName=p2SymChangeBorder, Path=BorderBrush}">
+                                                <Button Name="p2SymChangeButton" Tag="2" Background="#afafaf" Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=p2SymChangeBorder}" Width="{Binding ActualHeight, ElementName=p2SymChangeBorder}" MouseEnter="SymChangeButton_MouseEnter" MouseLeave="Element_MouseLeave" Click="SymChangeButton_Click">
+                                                    <Image Source="{Binding Path=P2Image, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Margin="5"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Button>
+                                            </Border>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+
+                <!-- grid for back button -->
+                <Grid Grid.Column="1" Grid.Row="4" Name="backButtonGrid">
+                    <Border MaxHeight="{Binding ActualWidth, ElementName=backButtonGrid}"
+                MaxWidth="{Binding ActualHeight, ElementName=backButtonGrid}">
+                        <Border  Margin="10" Name="backButtonBorder">
+                            <Button Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=backButtonBorder}" Width="{Binding ActualHeight, ElementName=backButtonBorder}" Click="Menu_Button_Click" Name="backButton" MouseEnter="BackButton_MouseEnter" MouseLeave="Element_MouseLeave">
+                                <Image Source="Content/Images/returnD.png" Stretch="UniformToFill" Margin="5" Name="backButtonImage"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Button>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Grid>
+
+
+
+            <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+            <!-- POPUP -->
+
+            <Grid Name="popupGrid" Height="{Binding ActualHeight, ElementName=innerWindow}" Width="{Binding ActualWidth, ElementName=innerWindow}" Panel.ZIndex="0"/>
+        </Grid>
+    </Border>
+</Window>
