@@ -755,7 +755,7 @@
                                     <!-- grid for player 1 symbol -->
                                     <Grid Grid.Column="3" Grid.Row="1" Name="p1SymChangeGrid">
                                         <Border MaxHeight="{Binding ActualWidth, ElementName=p1SymChangeGrid}" MaxWidth="{Binding ActualHeight, ElementName=p1SymChangeGrid}">
-                                            <Border  Margin="0" Name="p1SymChangeBorder">
+                                            <Border Name="p1SymChangeBorder">
                                                 <Button Name="p1SymChangeButton"  Tag="1" Background="#afafaf" Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=p1SymChangeBorder}" Width="{Binding ActualHeight, ElementName=p1SymChangeBorder}" MouseEnter="SymChangeButton_MouseEnter" MouseLeave="Element_MouseLeave" Click="SymChangeButton_Click">
                                                     <Image Source="{Binding Path=P1Image, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Button>
@@ -798,7 +798,7 @@
                                     <!-- grid for player 2 symbol -->
                                     <Grid Grid.Column="3" Grid.Row="1" Name="p2SymChangeGrid">
                                         <Border MaxHeight="{Binding ActualWidth, ElementName=p2SymChangeGrid}" MaxWidth="{Binding ActualHeight, ElementName=p2SymChangeGrid}">
-                                            <Border  Margin="10" Name="p2SymChangeBorder" BorderBrush="{Binding ElementName=p2SymChangeBorder, Path=BorderBrush}">
+                                            <Border  Name="p2SymChangeBorder">
                                                 <Button Name="p2SymChangeButton" Tag="2" Background="#afafaf" Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=p2SymChangeBorder}" Width="{Binding ActualHeight, ElementName=p2SymChangeBorder}" MouseEnter="SymChangeButton_MouseEnter" MouseLeave="Element_MouseLeave" Click="SymChangeButton_Click">
                                                     <Image Source="{Binding Path=P2Image, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Margin="5"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Button>

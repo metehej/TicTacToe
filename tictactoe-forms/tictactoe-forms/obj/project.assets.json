@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\data\\skola\\PRG\\PROJEKT\\tictactoe-forms\\tictactoe-forms\\tictactoe-forms.csproj",
+      "projectUniqueName": "C:\\data\\git\\prgproject\\tictactoe-forms\\tictactoe-forms\\tictactoe-forms.csproj",
       "projectName": "tictactoe-forms",
-      "projectPath": "C:\\data\\skola\\PRG\\PROJEKT\\tictactoe-forms\\tictactoe-forms\\tictactoe-forms.csproj",
+      "projectPath": "C:\\data\\git\\prgproject\\tictactoe-forms\\tictactoe-forms\\tictactoe-forms.csproj",
       "packagesPath": "C:\\Users\\matyk\\.nuget\\packages\\",
-      "outputPath": "C:\\data\\skola\\PRG\\PROJEKT\\tictactoe-forms\\tictactoe-forms\\obj\\",
+      "outputPath": "C:\\data\\git\\prgproject\\tictactoe-forms\\tictactoe-forms\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
