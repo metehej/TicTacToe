@@ -204,6 +204,11 @@ namespace tictactoe_forms
         {
             statLine.Text = "Change the num of fields in line for win";
         }
+        //handles mouse hovering on NameBox Textboxes
+        private void NameBox_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            statLine.Text = "Change player's name";
+        }
         //handles mouse hovering off menu buttons
         private void Element_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -242,8 +247,7 @@ namespace tictactoe_forms
         }
 
 
-        #endregion
 
-        
+        #endregion
     }
 }

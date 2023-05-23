@@ -151,7 +151,9 @@ namespace tictactoe_forms
             }
             else
             {
-                p1ImagePath = "Content/Images/p1.png";
+                p1ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p1.png";
+                if (File.Exists(p1ImagePath)) File.Delete(p1ImagePath);
+                File.Copy(new Uri("Content/Images/p1.png", UriKind.Relative).ToString(), p1ImagePath, true);
                 error = true;
             }
             try
@@ -160,7 +162,9 @@ namespace tictactoe_forms
             }
             catch (Exception)
             {
-                p1ImagePath = "Content/Images/p1.png";
+                p1ImagePath = Environment.GetEnvironmentVariable("appdata") + " / TicTacToeMK / p1.png";
+                if (File.Exists(p1ImagePath)) File.Delete(p1ImagePath);
+                File.Copy(new Uri("Content/Images/p1.png", UriKind.Relative).ToString(), p1ImagePath, true);
                 P1Image = ImageGen(new Uri(p1ImagePath, UriKind.Relative));
                 error = true;
             }
@@ -171,7 +175,9 @@ namespace tictactoe_forms
             }
             else
             {
-                p2ImagePath = "Content/Images/p2.png";
+                p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p2.png";
+                if (File.Exists(p2ImagePath)) File.Delete(p2ImagePath);
+                File.Copy(new Uri("Content/Images/p2.png", UriKind.Relative).ToString(), p2ImagePath, true);
                 error = true;
             }
             try
@@ -180,7 +186,9 @@ namespace tictactoe_forms
             }
             catch (Exception)
             {
-                p2ImagePath = "Content/Images/p2.png";
+                p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p2.png";
+                if (File.Exists(p2ImagePath)) File.Delete(p2ImagePath);
+                File.Copy(new Uri("Content/Images/p2.png", UriKind.Relative).ToString(), p2ImagePath, true);
                 P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Relative));
                 error = true;
             }
@@ -720,7 +728,7 @@ namespace tictactoe_forms
             {
                 try
                 {
-                    string pathString = Environment.GetEnvironmentVariable("appdata") + "\\TicTacToeMK\\p" + System.IO.Path.GetFileName(picDialog.FileName);
+                    string pathString = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p" + System.IO.Path.GetFileName(picDialog.FileName);
                     if (File.Exists(pathString)) File.Delete(pathString);
                     switch (playerNum)
                     {

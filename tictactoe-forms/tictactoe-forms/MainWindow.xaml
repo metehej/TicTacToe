@@ -750,7 +750,7 @@
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
                                     <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ResourceKey=nameTextBoxBorder}" Width="{Binding ElementName=p1NameBox, Path=ActualWidth}" Height="{Binding ElementName=p1NameBox, Path=ActualHeight}">
-                                        <TextBox x:Name="p1NameBox" Style="{DynamicResource ResourceKey=nameTextBox}" Text="{Binding Path=P1Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseLeave="NameChange_MouseLeave" BorderBrush="Transparent"/>
+                                        <TextBox x:Name="p1NameBox" Style="{DynamicResource ResourceKey=nameTextBox}" Text="{Binding Path=P1Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseLeave="NameChange_MouseLeave" BorderBrush="Transparent" MouseEnter="NameBox_MouseEnter"/>
                                     </Border>
                                     <!-- grid for player 1 symbol -->
                                     <Grid Grid.Column="3" Grid.Row="1" Name="p1SymChangeGrid">
@@ -793,7 +793,7 @@
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
                                     <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ResourceKey=nameTextBoxBorder}" Width="{Binding ElementName=p2NameBox, Path=ActualWidth}" Height="{Binding ElementName=p2NameBox, Path=ActualHeight}">
-                                        <TextBox x:Name="p2NameBox" Style="{DynamicResource ResourceKey=nameTextBox}" Text="{Binding Path=P2Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseLeave="NameChange_MouseLeave" BorderBrush="Transparent"/>
+                                        <TextBox x:Name="p2NameBox" Style="{DynamicResource ResourceKey=nameTextBox}" Text="{Binding Path=P2Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseLeave="NameChange_MouseLeave" BorderBrush="Transparent" MouseEnter="NameBox_MouseEnter"/>
                                     </Border>
                                     <!-- grid for player 2 symbol -->
                                     <Grid Grid.Column="3" Grid.Row="1" Name="p2SymChangeGrid">
