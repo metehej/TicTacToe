@@ -561,7 +561,7 @@ namespace tictactoe_forms
                 //changing the style according to if the game is over, who owns the field and whose turn it is
                 if(end)
                 {
-                    x.Style = mw.Singleton.gameGrid.FindResource("buttOff") as Style;
+                    x.Style = mw.Singleton.gameGrid.FindResource("buttonOff") as Style;
                 }
                 else if (buttonState != 0)
                 {

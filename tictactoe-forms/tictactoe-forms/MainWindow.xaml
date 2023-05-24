@@ -27,7 +27,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid MaxHeight="95" MaxWidth="95">
+                        <Grid>
                             <Border Name="buttonBorder" BorderBrush="Black" BorderThickness="2" Background="{TemplateBinding Background}" CornerRadius="4">
                                 <TextBlock Name="buttonText" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="{TemplateBinding FontSize}">
                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -201,7 +201,9 @@
         <Style x:Key="textStyleDay" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Segoe Ui"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Center"/>
         </Style>
         
         <!-- NIGHT -->
@@ -212,7 +214,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid MaxHeight="95" MaxWidth="95">
+                        <Grid>
                             <Border Name="buttonBorder" BorderBrush="#dfdfdf" BorderThickness="2" Background="{TemplateBinding Background}" CornerRadius="4">
                                 <TextBlock Name="buttonText" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="{TemplateBinding FontSize}">
                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -315,7 +317,7 @@
         </Style>
         
         <!-- button disable -->
-        <Style x:Key="buttOff" TargetType="Button">
+        <Style x:Key="buttonOff" TargetType="Button">
             <Setter Property="Cursor" Value="No"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Background" Value="#b0b0b0"/>
@@ -402,7 +404,7 @@
                         <Border MaxHeight="{Binding ActualWidth, ElementName=exitButtonGrid}"
                 MaxWidth="{Binding ActualHeight, ElementName=exitButtonGrid}">
                             <Border  Margin="10" Name="exitButtonBorder">
-                                <Button Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=exitButtonBorder}" Width="{Binding ActualHeight, ElementName=exitButtonBorder}" Click="Exit_Button_Click" Name="exitButton" MouseLeave="Element_MouseLeave" MouseEnter="ExitButton_MouseEnter">
+                                <Button Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=exitButtonBorder}" Width="{Binding ActualHeight, ElementName=exitButtonBorder}" Click="Exit_Button_Click" Name="exitButton" MouseLeave="Element_MouseLeave" MouseEnter="Element_MouseEnter" Tag="Exit the app">
                                     <Image Source="Content/Images/exitD.png" Stretch="UniformToFill" Margin="5" Name="exitButtonImage"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Button>
                             </Border>
@@ -466,7 +468,7 @@
                     <TextBlock x:Name="p1Count" Grid.Column="0" HorizontalAlignment="Center" Style="{Binding ElementName=statLine, Path=Style}" TextWrapping="Wrap" Text="{Binding Path=WinsPlayers[0], UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" FontSize="48" Padding="0,0,0,8"/>
 
                     <!-- reset button -->
-                    <Button x:Name="resetButt" Grid.Column="1" Style="{Binding ElementName=dayNightButton,Path=Style}" Click="Reset_Button_Click">
+                    <Button x:Name="resetButton" Grid.Column="1" Style="{Binding ElementName=dayNightButton,Path=Style}" Click="Reset_Button_Click">
                         <TextBlock Style="{Binding ElementName=statLine, Path=Style}" FontSize="18" Padding="5,10" Text="Reset"/>
                     </Button>
 
@@ -480,7 +482,7 @@
                     <Border MaxHeight="{Binding ActualWidth, ElementName=menuButtonGrid}"
                 MaxWidth="{Binding ActualHeight, ElementName=menuButtonGrid}">
                         <Border  Margin="10" Name="menuButtonBorder">
-                            <Button Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=menuButtonBorder}" Width="{Binding ActualHeight, ElementName=menuButtonBorder}" Click="Menu_Button_Click" Name="menuButton" MouseLeave="Element_MouseLeave" MouseEnter="MenuButton_MouseEnter">
+                            <Button Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=menuButtonBorder}" Width="{Binding ActualHeight, ElementName=menuButtonBorder}" Click="Menu_Button_Click" Name="menuButton" MouseLeave="Element_MouseLeave" MouseEnter="Element_MouseEnter" Tag="Menu">
                                 <Image Source="Content/Images/menuD.png" Stretch="UniformToFill" Margin="5" Name="menuButtonImage"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button>
                         </Border>
@@ -502,7 +504,7 @@
                     </Grid.RowDefinitions>
                     <!-- text block -->
                     <StackPanel Orientation="Vertical" Width="{Binding ActualWidth, ElementName=playArea}" Grid.Row="1" Grid.Column="1">
-                        <TextBlock x:Name="statLine" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Style="{DynamicResource textStyleDay}" Text="{Binding Path=StatLine, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock x:Name="statLine" Text="{Binding Path=StatLine, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource textStyleDay}" FontSize="25"/>
                     </StackPanel>
                 </Grid>
 
@@ -592,7 +594,7 @@
                 <Grid Name="settingsGrid" Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Margin="0, 0, 0, 10" >
                     <Border BorderThickness="2" Name="settingsArea"
                     MaxWidth="276" Background="#b0b0b0" CornerRadius="3">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" Name="settingsScrollViewer">
+                        <ScrollViewer VerticalScrollBarVisibility="Visible" Name="settingsScrollViewer" CanContentScroll="False">
                             <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                                 <!--#region styles -->
                                 <StackPanel.Resources>
@@ -606,11 +608,12 @@
                                     </Style>
                                     <!-- textblock style for slider type settings-->
                                     <Style x:Key="settingsText" TargetType="TextBlock">
-                                        <Setter Property="HorizontalAlignment" Value="Center"/>
                                         <Setter Property="VerticalAlignment" Value="Bottom"/>
+                                        <Setter Property="TextAlignment" Value="Center"/>
                                         <Setter Property="Foreground" Value="{Binding ElementName=statLine, Path=Foreground}"/>
-                                        <Setter Property="FontSize" Value="20"/>
-                                        <Setter Property="FontWeight" Value="Light"/>
+                                        <Setter Property="FontSize" Value="25"/>
+                                        <Setter Property="FontWeight" Value="DemiBold"/>
+                                        <Setter Property="TextDecorations" Value="Underline"/>
                                     </Style>
                                     <!-- slider style for slider type settings -->
                                     <Style x:Key="sliderSettingsSlider" TargetType="Slider">
@@ -677,7 +680,7 @@
                                         <RowDefinition Height="30"/>
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Game:" Style="{DynamicResource ResourceKey=settingsText}" TextDecorations="Underline" FontSize="25" FontWeight="DemiBold"/>
+                                    <TextBlock x:Name="settingsGameHeader" Grid.Row="1" Grid.Column="1" Text="Game:" Style="{DynamicResource ResourceKey=settingsText}"/>
                                 </Grid>
                                 <!-- gridSideSize setter -->
                                 <Grid>
@@ -695,8 +698,8 @@
                                         <RowDefinition Height="30"/>
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Text="Grid size:" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Style="{DynamicResource ResourceKey=settingsText}"/>
-                                    <Slider Grid.Column="1" Grid.Row="3" Minimum="3" Maximum="13" Value="{Binding Path=GridSideSize, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseEnter="GridSideSizeChange_MouseEnter" MouseLeave="Element_MouseLeave" Style="{DynamicResource ResourceKey=sliderSettingsSlider}"/>
+                                    <TextBlock Name="gridSideSizeSliderHeader" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Text="Grid size:"  Style="{DynamicResource ResourceKey=settingsText}" FontWeight="Medium" FontSize="20" TextDecorations="None"/>
+                                    <Slider Grid.Column="1" Grid.Row="3" Minimum="3" Maximum="13" Value="{Binding Path=GridSideSize, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{DynamicResource ResourceKey=sliderSettingsSlider}" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" Tag="Change the size of grid"/>
                                     <TextBlock Text="{Binding Path=GridSideSize, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="3" Style="{DynamicResource ResourceKey=sliderSettingsNumber}" Width="auto"/>
                                 </Grid>
                                 <!-- inLineForWin setter -->
@@ -715,8 +718,8 @@
                                         <RowDefinition Height="30"/>
                                         <RowDefinition Height="12"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Text="Fields in line for win:" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Style="{DynamicResource ResourceKey=settingsText}"/>
-                                    <Slider Grid.Column="1" Grid.Row="3" Minimum="3" Maximum="13" Value="{Binding Path=InLineForWin, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseEnter="InLineForWinChange_MouseEnter" MouseLeave="Element_MouseLeave" Style="{DynamicResource ResourceKey=sliderSettingsSlider}"/>
+                                    <TextBlock Text="Fields in line for win:" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Style="{Binding ElementName=gridSideSizeSliderHeader,Path=Style}" FontWeight="Medium" FontSize="20" TextDecorations="None"/>
+                                    <Slider Grid.Column="1" Grid.Row="3" Minimum="3" Maximum="13" Value="{Binding Path=InLineForWin, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{DynamicResource ResourceKey=sliderSettingsSlider}" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" Tag="Change the num of fields in line for win"/>
                                     <TextBlock Text="{Binding Path=InLineForWin, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="3" Style="{DynamicResource ResourceKey=sliderSettingsNumber}"/>
                                 </Grid>
                                 <Border Style="{DynamicResource ResourceKey=settingBorder}"/>
@@ -734,7 +737,7 @@
                                         <RowDefinition Height="30"/>
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Player 1:" Style="{DynamicResource ResourceKey=settingsText}" TextDecorations="Underline" FontSize="25" FontWeight="DemiBold"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Player 1:" Style="{Binding ElementName=settingsGameHeader,Path=Style}"/>
                                 </Grid>
                                 <!-- body -->
                                 <Grid>
@@ -751,13 +754,13 @@
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
                                     <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ResourceKey=nameTextBoxBorder}" Width="{Binding ElementName=p1NameBox, Path=ActualWidth}" Height="{Binding ElementName=p1NameBox, Path=ActualHeight}">
-                                        <TextBox x:Name="p1NameBox" Style="{DynamicResource ResourceKey=nameTextBox}" Text="{Binding Path=P1Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseLeave="NameChange_MouseLeave" BorderBrush="Transparent" MouseEnter="NameBox_MouseEnter"/>
+                                        <TextBox x:Name="p1NameBox" Text="{Binding Path=P1Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{DynamicResource ResourceKey=nameTextBox}" BorderBrush="Transparent" MouseEnter="Element_MouseEnter" MouseLeave="NameChange_MouseLeave" Tag="Change player's name"/>
                                     </Border>
                                     <!-- grid for player 1 symbol -->
                                     <Grid Grid.Column="3" Grid.Row="1" Name="p1SymChangeGrid">
                                         <Border MaxHeight="{Binding ActualWidth, ElementName=p1SymChangeGrid}" MaxWidth="{Binding ActualHeight, ElementName=p1SymChangeGrid}">
                                             <Border Name="p1SymChangeBorder">
-                                                <Button Name="p1SymChangeButton"  Tag="1" Background="#afafaf" Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=p1SymChangeBorder}" Width="{Binding ActualHeight, ElementName=p1SymChangeBorder}" MouseEnter="SymChangeButton_MouseEnter" MouseLeave="Element_MouseLeave" Click="SymChangeButton_Click">
+                                                <Button Name="p1SymChangeButton"  Tag="1" Background="#afafaf" Style="{DynamicResource ResourceKey=buttonStyleDay}" Height="{Binding ActualWidth, ElementName=p1SymChangeBorder}" Width="{Binding ActualHeight, ElementName=p1SymChangeBorder}" MouseEnter="SymChangeButton_MouseEnter" MouseLeave="Element_MouseLeave" Click="SymChangeButton_Click">
                                                     <Image Source="{Binding Path=P1Image, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Button>
                                             </Border>
@@ -779,7 +782,7 @@
                                         <RowDefinition Height="30"/>
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Player 2:" Style="{DynamicResource ResourceKey=settingsText}" TextDecorations="Underline" FontSize="25" FontWeight="DemiBold"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Player 2:" Style="{Binding ElementName=settingsGameHeader,Path=Style}"/>
                                 </Grid>
                                 <!-- body -->
                                 <Grid>
@@ -796,13 +799,13 @@
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
                                     <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ResourceKey=nameTextBoxBorder}" Width="{Binding ElementName=p2NameBox, Path=ActualWidth}" Height="{Binding ElementName=p2NameBox, Path=ActualHeight}">
-                                        <TextBox x:Name="p2NameBox" Style="{DynamicResource ResourceKey=nameTextBox}" Text="{Binding Path=P2Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MouseLeave="NameChange_MouseLeave" BorderBrush="Transparent" MouseEnter="NameBox_MouseEnter"/>
+                                        <TextBox x:Name="p2NameBox" Text="{Binding Path=P2Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{DynamicResource ResourceKey=nameTextBox}" BorderBrush="Transparent" MouseEnter="Element_MouseEnter" MouseLeave="NameChange_MouseLeave" Tag="Change player's name"/>
                                     </Border>
                                     <!-- grid for player 2 symbol -->
                                     <Grid Grid.Column="3" Grid.Row="1" Name="p2SymChangeGrid">
                                         <Border MaxHeight="{Binding ActualWidth, ElementName=p2SymChangeGrid}" MaxWidth="{Binding ActualHeight, ElementName=p2SymChangeGrid}">
                                             <Border  Name="p2SymChangeBorder">
-                                                <Button Name="p2SymChangeButton" Tag="2" Background="#afafaf" Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=p2SymChangeBorder}" Width="{Binding ActualHeight, ElementName=p2SymChangeBorder}" MouseEnter="SymChangeButton_MouseEnter" MouseLeave="Element_MouseLeave" Click="SymChangeButton_Click">
+                                                <Button Name="p2SymChangeButton" Tag="2" Background="#afafaf" Style="{Binding ElementName=p1SymChangeButton, Path=Style}" Height="{Binding ActualWidth, ElementName=p2SymChangeBorder}" Width="{Binding ActualHeight, ElementName=p2SymChangeBorder}" MouseEnter="SymChangeButton_MouseEnter" MouseLeave="Element_MouseLeave" Click="SymChangeButton_Click">
                                                     <Image Source="{Binding Path=P2Image, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" Margin="5"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Button>
                                             </Border>
@@ -812,6 +815,7 @@
                                 <!--#endregion-->
                                 <Border Style="{DynamicResource ResourceKey=settingBorder}"/>
                                 <!--#region reset buttons -->
+                                <!-- header -->
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="10"/>
@@ -819,20 +823,52 @@
                                         <ColumnDefinition Width="10"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="6"/>
-                                        <RowDefinition Height="50"/>
-                                        <!-- reset counters -->
-                                        <RowDefinition Height="6"/>
-                                        <RowDefinition Height="50"/>
-                                        <!-- reset pictures -->
-                                        <RowDefinition Height="6"/>
-                                        <RowDefinition Height="50"/>
-                                        <!-- reset all settings -->
-                                        <RowDefinition Height="6"/>
-                                        <RowDefinition Height="50"/>
-                                        <!-- delete local files and exit -->
+                                        <RowDefinition Height="12"/>
+                                        <RowDefinition Height="30"/>
                                         <RowDefinition Height="6"/>
                                     </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Reset, delete:" Style="{Binding ElementName=settingsGameHeader,Path=Style}"/>
+                                </Grid>
+                                <!-- body -->
+                                <Grid>
+                                    <!--#region column and row definitions -->
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="40"/>
+                                        <!-- reset counters -->
+                                        <RowDefinition Height="10"/>
+                                        <RowDefinition Height="40"/>
+                                        <!-- reset symbols -->
+                                        <RowDefinition Height="10"/>
+                                        <RowDefinition Height="40"/>
+                                        <!-- reset all settings -->
+                                        <RowDefinition Height="10"/>
+                                        <RowDefinition Height="40"/>
+                                        <!-- delete local files and exit -->
+                                        <RowDefinition Height="12"/>
+                                    </Grid.RowDefinitions>
+                                    <!--#endregion-->
+                                    <!-- reset counters button -->
+                                    <Button x:Name="resetCountButton" Grid.Column="1" Grid.Row="1" Style="{Binding ElementName=p1SymChangeButton, Path=Style}" MaxWidth="500" Height="40" Click="ResetCount_Button_Click" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" Tag="Reset win counters" HorizontalAlignment="Stretch">
+                                        <TextBlock x:Name="resetCountButtonText" Text="Reset counters" Style="{DynamicResource ResourceKey=textStyleDay}"  FontSize="20" />
+                                    </Button>
+                                    <!-- reset symbols button -->
+                                    <Button x:Name="resetSymButton" Grid.Column="1" Grid.Row="3" Style="{Binding ElementName=p1SymChangeButton, Path=Style}" MaxWidth="500" Height="40" Click="ResetSym_Button_Click" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" Tag="Reset players' symbols" HorizontalAlignment="Stretch">
+                                        <TextBlock Text="Reset symbols" Style="{Binding ElementName=resetCountButtonText, Path=Style}"  FontSize="20" />
+                                    </Button>
+                                    <!-- reset all settings button -->
+                                    <Button x:Name="resetAllButton" Grid.Column="1" Grid.Row="5" Style="{Binding ElementName=p1SymChangeButton, Path=Style}" MaxWidth="500" Height="40" Click="ResetAll_Button_Click" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" Tag="Reset everything (symbols, settings, etc.)" HorizontalAlignment="Stretch">
+                                        <TextBlock Text="Reset everything" Style="{Binding ElementName=resetCountButtonText, Path=Style}"  FontSize="20" />
+                                    </Button>
+                                    <!-- delete local files and exit button -->
+                                    <Button x:Name="deleteLocalsButton" Grid.Column="1" Grid.Row="7" Style="{Binding ElementName=p1SymChangeButton, Path=Style}" MaxWidth="500" Height="40" Click="DeleteLocals_Button_Click" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" Tag="Irreversibly delete local files, exit the app" HorizontalAlignment="Stretch">
+                                        <TextBlock Text="Delete local files" Style="{Binding ElementName=resetCountButtonText, Path=Style}"  FontSize="20" />
+                                    </Button>
                                 </Grid>
                             </StackPanel>
                         </ScrollViewer>
@@ -844,7 +880,7 @@
                     <Border MaxHeight="{Binding ActualWidth, ElementName=backButtonGrid}"
                 MaxWidth="{Binding ActualHeight, ElementName=backButtonGrid}">
                         <Border  Margin="10" Name="backButtonBorder">
-                            <Button Style="{Binding ElementName=dayNightButton,Path=Style}" Height="{Binding ActualWidth, ElementName=backButtonBorder}" Width="{Binding ActualHeight, ElementName=backButtonBorder}" Click="Menu_Button_Click" Name="backButton" MouseEnter="BackButton_MouseEnter" MouseLeave="Element_MouseLeave">
+                            <Button Style="{Binding ElementName=dayNightButton, Path=Style}" Height="{Binding ActualWidth, ElementName=backButtonBorder}" Width="{Binding ActualHeight, ElementName=backButtonBorder}" Click="Menu_Button_Click" Name="backButton" MouseEnter="Element_MouseEnter" MouseLeave="Element_MouseLeave" Tag="Go back to game">
                                 <Image Source="Content/Images/returnD.png" Stretch="UniformToFill" Margin="5" Name="backButtonImage"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Button>
                         </Border>

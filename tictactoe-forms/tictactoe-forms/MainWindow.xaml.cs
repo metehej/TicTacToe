@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Effects;
@@ -160,6 +161,32 @@ namespace tictactoe_forms
         {
             gameInstance.OpenImageFile(((Button)sender).Tag.ToString());
         }
+        //handles a click on counters reset button
+        private void ResetCount_Button_Click(object sender, RoutedEventArgs e)
+        {
+            gameInstance.WinsPlayers = new int[2];
+            statLine.Text = "Counters were reset.";
+        }
+        //handles a click on symbols reset button
+        private void ResetSym_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        //handles a click on all reset button
+        private void ResetAll_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        //handles a click on delete local files button
+        private void DeleteLocals_Button_Click(object sender, RoutedEventArgs e)
+        {
+            gameInstance.saveSettings = false;
+            if (Directory.Exists(Environment.GetEnvironmentVariable("appdata") + "\\TicTacToeMK"))
+            {
+                Directory.Delete(Environment.GetEnvironmentVariable("appdata") + "\\TicTacToeMK", true);
+            }
+            Close();
+        }
         #endregion
 
         #region MouseOver events
@@ -180,34 +207,10 @@ namespace tictactoe_forms
                 statLine.Text = "Turn dark mode ON";
             }
         }
-        //handles mouse hovering on exitButton
-        private void ExitButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        //handes mouse hovering on other Elements (uses Tag as text input)
+        private void Element_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            statLine.Text = "Exit the app";
-        }
-        //handles mouse hovering on menuButton
-        private void MenuButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            statLine.Text = "Menu";
-        }
-        private void BackButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            statLine.Text = "Go back";
-        }
-        //handles mouse hovering on GridSideSize slider
-        private void GridSideSizeChange_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            statLine.Text = "Change the grid size";
-        }
-        //handles mouse hovering on InLineForWin slider
-        private void InLineForWinChange_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            statLine.Text = "Change the num of fields in line for win";
-        }
-        //handles mouse hovering on NameBox Textboxes
-        private void NameBox_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            statLine.Text = "Change player's name";
+            statLine.Text = ((FrameworkElement)sender).Tag.ToString();
         }
         //handles mouse hovering off menu buttons
         private void Element_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -248,9 +251,6 @@ namespace tictactoe_forms
                 gameInstance.Saving();
             }
         }
-
-
-
         #endregion
     }
 }
