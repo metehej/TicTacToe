@@ -225,7 +225,7 @@ namespace tictactoe_forms
         //handles mouse hovering off name change buttons
         private void NameChange_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            statLine.Text = "";
+            statLine.Text = ""; 
             if (gameInstance.TurnPlayer == 1)
             {
                 gameInstance.StatLine = gameInstance.P1Name + "'s turn."; 
@@ -242,8 +242,11 @@ namespace tictactoe_forms
         //handles exit operations
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            statLine.Text = "Saving, closing...";
-            gameInstance.Saving();
+            if (gameInstance.saveSettings)
+            {
+                statLine.Text = "Saving, closing...";
+                gameInstance.Saving();
+            }
         }
 
 

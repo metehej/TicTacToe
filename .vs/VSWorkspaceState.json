@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\tictactoe-forms",
+    "\\tictactoe-forms\\tictactoe-forms"
   ],
-  "SelectedNode": "\\C:\\data\\git\\prgproject",
+  "SelectedNode": "\\tictactoe-forms\\tictactoe-forms\\Game.cs",
   "PreviewInSolutionExplorer": false
 }

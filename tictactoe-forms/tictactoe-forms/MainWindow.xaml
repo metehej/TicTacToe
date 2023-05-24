@@ -580,12 +580,12 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
-                
-                
-                <!--#region symbol buttons -->
-                
 
-                
+
+                <!--#region symbol buttons -->
+
+
+
                 <!--#endregion-->
 
                 <!-- settings panel -->
@@ -662,7 +662,7 @@
                                     </Style>
                                 </StackPanel.Resources>
                                 <!--#endregion-->
-                                
+
                                 <!--#region elements -->
                                 <!--#region game settings-->
                                 <!-- header -->
@@ -736,6 +736,7 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="1" Grid.Column="1" Text="Player 1:" Style="{DynamicResource ResourceKey=settingsText}" TextDecorations="Underline" FontSize="25" FontWeight="DemiBold"/>
                                 </Grid>
+                                <!-- body -->
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="10"/>
@@ -763,6 +764,7 @@
                                         </Border>
                                     </Grid>
                                 </Grid>
+                                <!--#endregion-->
                                 <Border Style="{DynamicResource ResourceKey=settingBorder}"/>
                                 <!--#region player 2 settings -->
                                 <!-- header -->
@@ -779,6 +781,7 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="1" Grid.Column="1" Text="Player 2:" Style="{DynamicResource ResourceKey=settingsText}" TextDecorations="Underline" FontSize="25" FontWeight="DemiBold"/>
                                 </Grid>
+                                <!-- body -->
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="10"/>
@@ -806,6 +809,31 @@
                                         </Border>
                                     </Grid>
                                 </Grid>
+                                <!--#endregion-->
+                                <Border Style="{DynamicResource ResourceKey=settingBorder}"/>
+                                <!--#region reset buttons -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="50"/>
+                                        <!-- reset counters -->
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="50"/>
+                                        <!-- reset pictures -->
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="50"/>
+                                        <!-- reset all settings -->
+                                        <RowDefinition Height="6"/>
+                                        <RowDefinition Height="50"/>
+                                        <!-- delete local files and exit -->
+                                        <RowDefinition Height="6"/>
+                                    </Grid.RowDefinitions>
+                                </Grid>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -823,13 +851,6 @@
                     </Border>
                 </Grid>
             </Grid>
-
-
-
-            <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-            <!-- POPUP -->
-
-            <Grid Name="popupGrid" Height="{Binding ActualHeight, ElementName=innerWindow}" Width="{Binding ActualWidth, ElementName=innerWindow}" Panel.ZIndex="0"/>
         </Grid>
     </Border>
 </Window>

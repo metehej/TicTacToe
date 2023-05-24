@@ -33,6 +33,7 @@ namespace tictactoe_forms
         private string statLine = "placeholder";                        //for storing text from statline when writing something temporary over it
 
         public Binding statLineBinding = new("StatLine");               //binding for statLine element
+        public bool saveSettings = true;
 
         //styles for buttons used in RedrawingPlayfield()
         Style? stylecan;
@@ -347,11 +348,6 @@ namespace tictactoe_forms
                             StatLine = p2Name + " won!";
                             WinsPlayers = new int[2] { winsPlayers[0], winsPlayers[1] + 1 };
                         }
-                        //changing style of buttons to unavailable
-                        foreach (Button x in mw.Singleton.playAreaGrid.Children)
-                        {
-                            x.Style = mw.Singleton.gameGrid.FindResource("buttOff") as Style;
-                        }
                         //displaying new scores, de-highlighting symbols
                         mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
                         mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
@@ -364,11 +360,6 @@ namespace tictactoe_forms
                         end = true;
                         StatLine = "Its a tie!";
                         RedrawingPlayfield();
-                        //changing style of buttons
-                        foreach (Button x in mw.Singleton.playAreaGrid.Children)
-                        {
-                            x.Style = mw.Singleton.gameGrid.FindResource("buttOff") as Style;
-                        }
                         //redrawing player symbol boxes
                         mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
                         mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
@@ -544,6 +535,10 @@ namespace tictactoe_forms
             mw.Singleton.statLine.Text = "Reset.";
             //after 1 s, displays which player's turn it is. async task allows players to play during this time
             await Task.Delay(1000);
+            if (Panel.GetZIndex(mw.Singleton.menuGrid) <= Panel.GetZIndex(mw.Singleton.gameGrid))
+            {
+                mw.Singleton.statLine.SetBinding(TextBlock.TextProperty, statLineBinding);
+            }
             if (turnPlayer == 1)
             {
                 StatLine = p1Name + "'s turn.";
@@ -551,10 +546,6 @@ namespace tictactoe_forms
             else
             {
                 StatLine = p2Name + "'s turn.";
-            }
-            if (Panel.GetZIndex(mw.Singleton.menuGrid) < Panel.GetZIndex(mw.Singleton.gameGrid))
-            {
-                mw.Singleton.statLine.SetBinding(TextBlock.TextProperty, statLineBinding);
             }
         }
         #endregion
@@ -567,8 +558,12 @@ namespace tictactoe_forms
             foreach (Button x in mw.Singleton.playAreaGrid.Children)
             {
                 int buttonState = gridStatus[Convert.ToInt32(x.Tag) % gridSideSize, Convert.ToInt32(x.Tag) / gridSideSize];
-                //changing the style according to who owns the field and whose turn it is
-                if (buttonState != 0)
+                //changing the style according to if the game is over, who owns the field and whose turn it is
+                if(end)
+                {
+                    x.Style = mw.Singleton.gameGrid.FindResource("buttOff") as Style;
+                }
+                else if (buttonState != 0)
                 {
                     if (buttonState == turnPlayer) { x.Style = styleown; }
                     else { x.Style = stylecant; }
