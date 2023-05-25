@@ -745,12 +745,16 @@ namespace tictactoe_forms
                     switch (playerNum)
                     {
                         case "1":
-                            p1ImagePath = "Content/Images/p1.png";
-                            P1Image = ImageGen(new Uri(p1ImagePath, UriKind.Relative)); 
+                            p1ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p1.png";
+                            if (File.Exists(p1ImagePath)) File.Delete(p1ImagePath);
+                            File.Copy(new Uri("Content/Images/p1.png", UriKind.Relative).ToString(), p1ImagePath, true);
+                            P1Image = ImageGen(new Uri(p1ImagePath, UriKind.Absolute));
                             break;
                         case "2":
-                            p2ImagePath = "Content/Images/p2.png";
-                            P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Relative));
+                            p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p2.png";
+                            if (File.Exists(p2ImagePath)) File.Delete(p2ImagePath);
+                            File.Copy(new Uri("Content/Images/p2.png", UriKind.Relative).ToString(), p2ImagePath, true);
+                            P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Absolute));
                             break;
                     }
                 }
