@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -51,8 +52,8 @@ namespace tictactoe_forms
         public bool DarkMode { get { return darkMode; } set { darkMode = value; RedrawingUI(); } } //Ai and DarkMode automatically redraws certain Ui elements
         public int[,] GridStatus { get { return gridStatus; } set { gridStatus = value; } }
         public int TurnPlayer { get { return turnPlayer; } set { turnPlayer = value; } }
-        public int GridSideSize { get { return gridSideSize; } set { gridSideSize = value; if (gridSideSize < inLineForWin) { InLineForWin = gridSideSize; }; OnPropertyChanged("GridSideSize"); } }
-        public int InLineForWin { get { return inLineForWin; } set { inLineForWin = value; if (gridSideSize < inLineForWin) { InLineForWin = gridSideSize; }; OnPropertyChanged("InLineForWin"); } }
+        public int GridSideSize { get { return gridSideSize; } set { gridSideSize = value; if (gridSideSize < inLineForWin) { InLineForWin = gridSideSize; }; OnPropertyChanged("GridSideSize"); Restarting(); } }
+        public int InLineForWin { get { return inLineForWin; } set { inLineForWin = value; if (gridSideSize < inLineForWin) { InLineForWin = gridSideSize; }; OnPropertyChanged("InLineForWin"); Restarting(); } }
         public int[] WinsPlayers { get { return winsPlayers; } set { winsPlayers = value; OnPropertyChanged("WinsPlayers"); } }
         public string P1Name { get { return p1Name; } set { p1Name = value; OnPropertyChanged("P1Name"); } }
         public string P2Name { get { return p2Name; } set { p2Name = value; OnPropertyChanged("P2Name"); } }
@@ -152,8 +153,7 @@ namespace tictactoe_forms
             }
             else
             {
-                p1ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p1.png";
-                if (File.Exists(p1ImagePath)) File.Delete(p1ImagePath);
+                p1ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + ".png";
                 File.Copy(new Uri("Content/Images/p1.png", UriKind.Relative).ToString(), p1ImagePath, true);
                 error = true;
             }
@@ -163,8 +163,7 @@ namespace tictactoe_forms
             }
             catch (Exception)
             {
-                p1ImagePath = Environment.GetEnvironmentVariable("appdata") + " / TicTacToeMK / p1.png";
-                if (File.Exists(p1ImagePath)) File.Delete(p1ImagePath);
+                p1ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + ".png";
                 File.Copy(new Uri("Content/Images/p1.png", UriKind.Relative).ToString(), p1ImagePath, true);
                 P1Image = ImageGen(new Uri(p1ImagePath, UriKind.Relative));
                 error = true;
@@ -176,21 +175,19 @@ namespace tictactoe_forms
             }
             else
             {
-                p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p2.png";
-                if (File.Exists(p2ImagePath)) File.Delete(p2ImagePath);
+                p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + ".png";
                 File.Copy(new Uri("Content/Images/p2.png", UriKind.Relative).ToString(), p2ImagePath, true);
                 error = true;
             }
             try
             {
-                P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Relative));
+                P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Absolute));
             }
             catch (Exception)
             {
-                p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p2.png";
-                if (File.Exists(p2ImagePath)) File.Delete(p2ImagePath);
+                p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + ".png";
                 File.Copy(new Uri("Content/Images/p2.png", UriKind.Relative).ToString(), p2ImagePath, true);
-                P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Relative));
+                P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Absolute));
                 error = true;
             }
             ReadTwoLines();
@@ -331,7 +328,13 @@ namespace tictactoe_forms
                 if (gridStatus[toChange.Item1, toChange.Item2] == 0)
                 {
                     //changing the state of the grid (var. "gridStatus")
-                    gridStatus = GridSetter();
+                    try
+                    {
+                        int[,] stateOfGridNew = gridStatus;
+                        stateOfGridNew[toChange.Item1, toChange.Item2] = turnPlayer;
+                        gridStatus = stateOfGridNew;
+                    }
+                    catch (Exception) { }
                     turns++;
                     //checking if the player won
                     if (WinCheck())
@@ -385,18 +388,6 @@ namespace tictactoe_forms
                     StatLine = "Can't insert it here.";
                 }
             }
-        }
-        //changes the 2d array according to which button was pressed
-        public int[,] GridSetter()
-        {
-            try
-            {
-                int[,] stateOfGridNew = gridStatus;
-                stateOfGridNew[toChange.Item1, toChange.Item2] = turnPlayer;
-                return stateOfGridNew;
-            }
-            catch (Exception) { }
-            return gridStatus;
         }
         //checks for win in all possible directions
         public bool WinCheck()
@@ -723,19 +714,20 @@ namespace tictactoe_forms
             {
                 try
                 {
-                    string pathString = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p" + System.IO.Path.GetFileName(picDialog.FileName);
-                    if (File.Exists(pathString)) File.Delete(pathString);
+                    string pathString = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + System.IO.Path.GetExtension(picDialog.FileName);
                     switch (playerNum)
                     {
                         case "1":
                             File.Copy(picDialog.FileName, pathString, true);
+                            P1Image = ImageGen(new Uri(pathString, UriKind.Absolute));
+                            File.Delete(p1ImagePath);
                             p1ImagePath = pathString;
-                            P1Image = ImageGen(new Uri(p1ImagePath, UriKind.Absolute));
                             break;
                         case "2":
                             File.Copy(picDialog.FileName, pathString, true);
+                            P2Image = ImageGen(new Uri(pathString, UriKind.Absolute));
+                            File.Delete(p2ImagePath);
                             p2ImagePath = pathString;
-                            P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Absolute));
                             break;
                     }
                 }
@@ -745,14 +737,14 @@ namespace tictactoe_forms
                     switch (playerNum)
                     {
                         case "1":
-                            p1ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p1.png";
-                            if (File.Exists(p1ImagePath)) File.Delete(p1ImagePath);
+                            File.Delete(p1ImagePath);
+                            p1ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + ".png";
                             File.Copy(new Uri("Content/Images/p1.png", UriKind.Relative).ToString(), p1ImagePath, true);
                             P1Image = ImageGen(new Uri(p1ImagePath, UriKind.Absolute));
                             break;
                         case "2":
-                            p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/p2.png";
-                            if (File.Exists(p2ImagePath)) File.Delete(p2ImagePath);
+                            File.Delete(p2ImagePath);
+                            p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + ".png";
                             File.Copy(new Uri("Content/Images/p2.png", UriKind.Relative).ToString(), p2ImagePath, true);
                             P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Absolute));
                             break;
@@ -769,6 +761,28 @@ namespace tictactoe_forms
             returnImage.CacheOption = BitmapCacheOption.OnLoad;
             returnImage.EndInit();
             return returnImage;
+        }
+        //sets default values
+        public void Defaults(bool allDef)
+        {
+            File.Delete(p1ImagePath);
+            p1ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + ".png";
+            File.Copy(new Uri("Content/Images/p1.png", UriKind.Relative).ToString(), p1ImagePath, true);
+            P1Image = ImageGen(new Uri(p1ImagePath, UriKind.Absolute));
+            File.Delete(p2ImagePath);
+            p2ImagePath = Environment.GetEnvironmentVariable("appdata") + "/TicTacToeMK/" + DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss_fffffff") + ".png";
+            File.Copy(new Uri("Content/Images/p2.png", UriKind.Relative).ToString(), p2ImagePath, true);
+            P2Image = ImageGen(new Uri(p2ImagePath, UriKind.Absolute));
+            if(allDef)
+            {
+                WinsPlayers= new int[]{ 0, 0};
+                P1Name = "Player 1";
+                P2Name = "Player 2";
+                GridSideSize = 3;
+                InLineForWin = 3;
+                DarkMode = false;
+                Ai = false;
+            }
         }
         #endregion
     }

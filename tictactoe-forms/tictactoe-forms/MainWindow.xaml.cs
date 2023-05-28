@@ -139,16 +139,9 @@ namespace tictactoe_forms
                 mainGrid.Children.Add(statLineM);
                 gameInstance.RedrawingUI();
 
-                //redrawing grid if the gridsize has changed
-                if (gameInstance.GridStatus.GetLength(0) != gameInstance.GridSideSize)
-                {
-                    gameInstance.Restarting();
-                }
-                else
-                {
-                    gameInstance.RedrawingPlayfield();
-                }
-                
+                //redrawing grid
+                gameInstance.RedrawingPlayfield();
+
             }
         }
         //handles a click on Exit button
@@ -170,12 +163,13 @@ namespace tictactoe_forms
         //handles a click on symbols reset button
         private void ResetSym_Button_Click(object sender, RoutedEventArgs e)
         {
+            gameInstance.Defaults(false);
 
         }
         //handles a click on all reset button
         private void ResetAll_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            gameInstance.Defaults(true);
         }
         //handles a click on delete local files button
         private void DeleteLocals_Button_Click(object sender, RoutedEventArgs e)
