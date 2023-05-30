@@ -6,6 +6,7 @@
     <RootNamespace>tictactoe_forms</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Content\Images\cross.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +28,10 @@
     <None Remove="Content\Images\returnD.png" />
     <None Remove="Content\Images\returnN.png" />
     <None Remove="Content\Images\sun.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\Images\cross.ico" />
   </ItemGroup>
 
   <ItemGroup>
