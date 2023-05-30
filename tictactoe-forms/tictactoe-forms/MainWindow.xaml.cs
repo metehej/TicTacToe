@@ -1,10 +1,10 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Media.Effects;
 
 namespace tictactoe_forms
@@ -39,13 +39,13 @@ namespace tictactoe_forms
 
         #region Click events
         //handles button click
-        public void PlayButtonClick(object sender, RoutedEventArgs e) 
+        public void Play_Button_Click(object sender, RoutedEventArgs e) 
         {
             //taking the tag of the sender button and passing it to ClickedEvent() function
             gameInstance.ClickedEvent(Convert.ToInt32(((Button)sender).Tag)); 
         }
         //handles switching between light and dark mode
-        private void DayNightButton_Click(object sender, RoutedEventArgs e) 
+        private void DayNight_Button_Click(object sender, RoutedEventArgs e) 
         {
             //negating the value of darkMode variable - automatically redraws
             gameInstance.DarkMode = !gameInstance.DarkMode;
@@ -58,37 +58,6 @@ namespace tictactoe_forms
             {
                 statLine.Text = "Turn dark mode ON";
             }
-        }
-        //handles switching AI on/off (WIP)
-        private void ButtonAI_Click(object sender, RoutedEventArgs e) 
-        {
-            Style? style;
-            if (gameInstance.Ai)
-            {
-                gameInstance.Ai = false;
-                if (gameInstance.DarkMode)
-                {
-                    style = gameGrid.FindResource("buttonStyleOffNight") as Style;
-                }
-                else
-                {
-                    style = gameGrid.FindResource("buttonStyleOffDay") as Style;
-                }
-
-            }
-            else
-            {
-                gameInstance.Ai = true;
-                if (gameInstance.DarkMode)
-                {
-                    style = gameGrid.FindResource("buttonStyleOnNight") as Style;
-                }
-                else
-                {
-                    style = gameGrid.FindResource("buttonStyleOnDay") as Style;
-                }
-            }
-            aiButton.Style = style;
         }
         //handles a click on reset button
         private void Reset_Button_Click(object sender, RoutedEventArgs e)
@@ -122,6 +91,9 @@ namespace tictactoe_forms
                 //moving status line
                 mainGrid.Children.Remove(statLineM);
                 menuGrid.Children.Add(statLineM);
+                //stopping stopwatch
+                gameInstance.sw.Stop();
+                gameInstance.dt.Stop();
             }
             else
             {
@@ -141,7 +113,6 @@ namespace tictactoe_forms
 
                 //redrawing grid
                 gameInstance.RedrawingPlayfield();
-
             }
         }
         //handles a click on Exit button
@@ -169,17 +140,46 @@ namespace tictactoe_forms
         //handles a click on all reset button
         private void ResetAll_Button_Click(object sender, RoutedEventArgs e)
         {
-            gameInstance.Defaults(true);
+            if (((Button)sender).Tag.ToString() != "popYes")
+            {
+                popUpShow("Are you sure?", "This action will revert all pictures and settings to default. Do you wish to proceed?", new RoutedEventHandler(ResetAll_Button_Click));
+            }
+            else
+            {
+                popUpRemove();
+                gameInstance.Defaults(true);
+            }
         }
         //handles a click on delete local files button
         private void DeleteLocals_Button_Click(object sender, RoutedEventArgs e)
         {
-            gameInstance.saveSettings = false;
-            if (Directory.Exists(Environment.GetEnvironmentVariable("appdata") + "\\TicTacToeMK"))
+            if (((Button)sender).Tag.ToString() != "popYes")
             {
-                Directory.Delete(Environment.GetEnvironmentVariable("appdata") + "\\TicTacToeMK", true);
+                popUpShow("Are you sure?", "This action will delete all saved files and will close the app. Do you wish to proceed?", new RoutedEventHandler(DeleteLocals_Button_Click));
             }
-            Close();
+            else
+            {
+                popUpRemove();
+                gameInstance.saveSettings = false;
+                if (Directory.Exists(Environment.GetEnvironmentVariable("appdata") + "\\TicTacToeMK"))
+                {
+                    Directory.Delete(Environment.GetEnvironmentVariable("appdata") + "\\TicTacToeMK", true);
+                }
+                Close();
+            }
+
+        }
+        //handles a click on hint or creds buttons
+        private void HintCreds_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if(((Button)sender).Tag.ToString() == "Hint")
+            {
+                popUpShow("Hint", string.Format("Players switch turns. They place their symbols in the grid, trying to put {0} of their symbols in row. the first one to succeed wins.", gameInstance.InLineForWin), null, "Ok");
+            }
+            else
+            {
+                popUpShow("Credits", "Author: Matěj Kretek\nMade for: Gymnázium a SPŠEI Frenštát pod Radhoštěm, p.o ", null, "Ok");
+            }
         }
         #endregion
 
@@ -190,7 +190,7 @@ namespace tictactoe_forms
             statLine.Text = "Change player's symbol";
         }
         //handles mouse hovering on dayNightButton
-        private void DayNightButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void DayNight_Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (gameInstance.DarkMode)
             {
@@ -244,6 +244,56 @@ namespace tictactoe_forms
                 statLine.Text = "Saving, closing...";
                 gameInstance.Saving();
             }
+        }
+        //handles click on No/eq button in popup
+        private void Popup_No_Button_Click(object sender, RoutedEventArgs e)
+        {
+            popUpRemove();
+        }
+        //makes a popup
+        public void popUpShow(string header, string text, RoutedEventHandler? yesEvent,  string buttonRight = "No", string buttonLeft = "Yes")
+        {
+            popButtonGrid.Children.Clear();
+            BlurEffect blur = new();
+            blur.Radius = 10;
+            blur.KernelType = KernelType.Gaussian;
+            mainGrid.Effect = blur;
+            menuGrid.Effect = blur;
+            Panel.SetZIndex(popGrid, 3);
+            popGrid.Background = new SolidColorBrush(Color.FromArgb(136, 10, 10, 10));
+            popHeader.Text = header;
+            popContent.Text = text;
+            Button button = new Button();
+            button.Click += new RoutedEventHandler(Popup_No_Button_Click);
+            button.SetValue(Grid.RowProperty, 1);
+            button.SetValue(Grid.ColumnProperty, 3);
+            button.SetResourceReference(StyleProperty, "popButton");
+            button.Width = 130;
+            button.Height = 40;
+            button.Content = buttonRight;
+            popButtonGrid.Children.Add(button);
+            if (yesEvent != null)
+            {
+                button = new Button();
+                button.Click += yesEvent;
+                button.Name = "popYes";
+                button.SetValue(Grid.RowProperty, 1);
+                button.SetValue(Grid.ColumnProperty, 1);
+                button.SetResourceReference(StyleProperty, "popButton");
+                button.Width = 130;
+                button.Height = 40;
+                button.Tag = "popYes";
+                button.Content = buttonLeft;
+                popButtonGrid.Children.Add(button);
+            }   
+        }
+        //removes the popup 
+        public void popUpRemove()
+        {
+            mainGrid.Effect = null;
+            menuGrid.Effect = null;
+            Panel.SetZIndex(popGrid, 0);
+            popGrid.Background = null;
         }
         #endregion
     }

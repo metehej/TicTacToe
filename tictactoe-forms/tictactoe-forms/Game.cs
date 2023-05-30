@@ -1,18 +1,15 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using System.DirectoryServices.ActiveDirectory;
+using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 using mw = tictactoe_forms.MainWindow;
 
 namespace tictactoe_forms
@@ -24,14 +21,16 @@ namespace tictactoe_forms
         #region Variable declarations
         private int[,] gridStatus = { { 0 }, { 0 } };                   //the current status of the play grid; format: int[x,y]
         private Tuple<int, int> toChange = Tuple.Create(0, 0);          //last clicked field
-        private int[] winsPlayers = { 0, 0 };                           //total number of wins; format: int {p1 wins, p2 wins/ai wins}
-        private bool runStopwatch = false;                              //whether the stopwatch should be running or not
-        private bool ai, darkMode, end;                                 //for storing states of certain components
+        private int[] winsPlayers = { 0, 0 };                           //total number of wins; format: int {p1 wins, p2 wins}
+        private bool darkMode, end;                                     //for storing states of certain components
         private int turnPlayer = 1, lastTurnPlayer = 1, turns = 0;      //which player is currently playing (1/2), which player was the
                                                                         //first to play this round (1/2), how many turns since start of round
         private int gridSideSize = 0, inLineForWin = 0;                 //size of one side of the grid, how many symbols in line required for win
-        private string p1Name = "Player 1", p2Name = "Player 2";        //names of players
+        private string p1Name = "Player 1", p2Name = "Player 2", currentTime = "placeholder";        
+                                                                        //names of players, stopwatch time
         private string statLine = "placeholder";                        //for storing text from statline when writing something temporary over it
+        public DispatcherTimer dt = new();
+        public Stopwatch sw = new();
 
         public Binding statLineBinding = new("StatLine");               //binding for statLine element
         public bool saveSettings = true;
@@ -48,18 +47,17 @@ namespace tictactoe_forms
         #endregion
 
         #region Access for mainwindow.xaml.cs and propertychagned handler. 
-        public bool Ai { get { return ai; } set { ai = value; RedrawingUI(); } }
-        public bool DarkMode { get { return darkMode; } set { darkMode = value; RedrawingUI(); } } //Ai and DarkMode automatically redraws certain Ui elements
-        public int[,] GridStatus { get { return gridStatus; } set { gridStatus = value; } }
+        public bool DarkMode { get { return darkMode; } set { darkMode = value; RedrawingUI(); } } //DarkMode automatically redraws certain Ui elements
         public int TurnPlayer { get { return turnPlayer; } set { turnPlayer = value; } }
         public int GridSideSize { get { return gridSideSize; } set { gridSideSize = value; if (gridSideSize < inLineForWin) { InLineForWin = gridSideSize; }; OnPropertyChanged("GridSideSize"); Restarting(); } }
-        public int InLineForWin { get { return inLineForWin; } set { inLineForWin = value; if (gridSideSize < inLineForWin) { InLineForWin = gridSideSize; }; OnPropertyChanged("InLineForWin"); Restarting(); } }
+        public int InLineForWin { get { return inLineForWin; } set { inLineForWin = value; if (gridSideSize < inLineForWin) { GridSideSize = inLineForWin; }; OnPropertyChanged("InLineForWin"); Restarting(); } }
         public int[] WinsPlayers { get { return winsPlayers; } set { winsPlayers = value; OnPropertyChanged("WinsPlayers"); } }
         public string P1Name { get { return p1Name; } set { p1Name = value; OnPropertyChanged("P1Name"); } }
         public string P2Name { get { return p2Name; } set { p2Name = value; OnPropertyChanged("P2Name"); } }
         public ImageSource? P1Image { get { return p1Image; } set { p1Image = value; OnPropertyChanged("P1Image"); } }
         public ImageSource? P2Image { get { return p2Image; } set { p2Image = value; OnPropertyChanged("P2Image"); } }
         public string StatLine { get { return statLine; } set { statLine = value; OnPropertyChanged("StatLine"); } }
+        public string CurrentTime { get { return currentTime; } set { currentTime = value; OnPropertyChanged("CurrentTime"); } }
         #endregion
 
         #region INotifyPropertyChanged
@@ -198,7 +196,7 @@ namespace tictactoe_forms
                 if (tempSetting != null)
                 {
                     gridSideSize = Convert.ToInt32(tempSetting);
-                    if (gridSideSize < 3 || gridSideSize > 10)
+                    if (gridSideSize < 3 || gridSideSize > 13)
                     {
                         gridSideSize = 3;
                     }
@@ -247,15 +245,6 @@ namespace tictactoe_forms
             {
                 DarkMode = false;
             }
-            ReadTwoLines();
-            if (tempSetting == "1")
-            {
-                Ai = true;
-            }
-            else
-            {
-                Ai = false;
-            }
 
             //settings that are not saved into a savefile
 
@@ -274,11 +263,15 @@ namespace tictactoe_forms
 
             //Initialization done, starting the game
             StatLine = p1Name + "'s turn.";
+            CurrentTime = "00:00:00.00";
+            dt.Tick += new EventHandler(StopwatchRunner);
+            dt.Interval = new TimeSpan(0, 0, 0, 0, 10);
             statLineBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
             if (error && !firstGame)
             {
                 MessageBox.Show("Game failed to load some data from the save file. Affected items were set to default values.", "A small inconvenience appeared!");
             }
+            saveFile.Close();
             return;
             //reading 2 lines (save file always contains data name and data value on two separate lines)
             void ReadTwoLines()
@@ -303,7 +296,7 @@ namespace tictactoe_forms
                 //creating a button with the style
                 Button button = new() { Style = stylecan };
                 //setting the Click function
-                button.Click += new RoutedEventHandler(mw.Singleton.PlayButtonClick);
+                button.Click += new RoutedEventHandler(mw.Singleton.Play_Button_Click);
                 //assigning a tag to the button
                 button.Tag = i;
                 //creating an image
@@ -340,6 +333,8 @@ namespace tictactoe_forms
                     if (WinCheck())
                     {
                         end = true;
+                        sw.Stop();
+                        dt.Stop();
                         RedrawingPlayfield();
                         if (turnPlayer == 1)
                         {
@@ -352,24 +347,37 @@ namespace tictactoe_forms
                             WinsPlayers = new int[2] { winsPlayers[0], winsPlayers[1] + 1 };
                         }
                         //displaying new scores, de-highlighting symbols
-                        mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
-                        mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
-
-
+                        if (turnPlayer == 1)
+                        {
+                            mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(200, 255, 200));
+                            mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(85, 85, 95));
+                        }
+                        else
+                        {
+                            mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(85, 85, 95));
+                            mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(200, 255, 200));
+                        }
                     }
                     //if no player won, checking if no empty fields left
                     else if (turns == GridSideSize * GridSideSize)
                     {
                         end = true;
+                        sw.Stop();
+                        dt.Stop();
                         StatLine = "Its a tie!";
                         RedrawingPlayfield();
                         //redrawing player symbol boxes
-                        mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
-                        mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
+                        mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(85, 85, 95));
+                        mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(85, 85, 95));
                     }
                     else
                     {
                         turnPlayer = turnPlayer * 2 % 3;
+                        if(!sw.IsRunning)
+                        {
+                            sw.Start();
+                            dt.Start();
+                        }
                         RedrawingPlayfield();
                         if (turnPlayer == 1)
                         {
@@ -522,6 +530,9 @@ namespace tictactoe_forms
             turnPlayer = lastTurnPlayer;
             turns = 0;
             end = false;
+            CurrentTime = "00:00:00.00";
+            sw.Reset();
+            mw.Singleton.stopwatchTextblock.FontSize = 43;
             RedrawingPlayfield();
             mw.Singleton.statLine.Text = "Reset.";
             //after 1 s, displays which player's turn it is. async task allows players to play during this time
@@ -537,6 +548,25 @@ namespace tictactoe_forms
             else
             {
                 StatLine = p2Name + "'s turn.";
+            }
+        }
+        //works as a stopwatch
+        public void StopwatchRunner(object? sender, EventArgs e)
+        {
+            if(sw.IsRunning)
+            {
+                TimeSpan timeSpan = sw.Elapsed;
+                if(timeSpan.Hours > 99)
+                {
+                    sw.Stop();
+                    dt.Stop();
+                    mw.Singleton.stopwatchTextblock.FontSize = 20;
+                    CurrentTime = "Taking u so long\nthe author's dead by now.";
+                }
+                else
+                {
+                    CurrentTime = string.Format("{0:00}:{1:00}:{2:00}.{3:00}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds / 10);
+                }
             }
         }
         #endregion
@@ -586,13 +616,13 @@ namespace tictactoe_forms
             //highlighting the background of the symbol box
             if (turnPlayer == 1)
             {
-                mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(187, 189, 83));
-                mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
+                mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(210, 210, 222));
+                mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(85, 85, 95));
             }
             else
             {
-                mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(187, 189, 83));
-                mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(105, 105, 105));
+                mw.Singleton.p1SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(85, 85, 95));
+                mw.Singleton.p2SymbolBorder.Background = new SolidColorBrush(Color.FromRgb(210, 210, 222));
             }
         }
         //redraws UI elements
@@ -602,49 +632,37 @@ namespace tictactoe_forms
             {
                 //changing the look of:
                 //backgrounds
-                mw.Singleton.windowGame.Background = new SolidColorBrush(Color.FromRgb(46, 46, 46));
-                mw.Singleton.settingsScrollViewer.Background = new SolidColorBrush(Color.FromRgb(70, 70, 70));
+                mw.Singleton.windowGame.Background = new SolidColorBrush(Color.FromRgb(35, 35, 40));
+                mw.Singleton.settingsScrollViewer.Background = new SolidColorBrush(Color.FromRgb(45, 45, 50));
                 //styles
                 mw.Singleton.statLine.Style = mw.Singleton.FindResource("textStyleNight") as Style;
                 mw.Singleton.dayNightButton.Style = mw.Singleton.FindResource("buttonStyleNight") as Style;
-                if (ai)
-                {
-                    mw.Singleton.aiButton.Style = mw.Singleton.FindResource("buttonStyleOnNight") as Style;
-                }
-                else
-                {
-                    mw.Singleton.aiButton.Style = mw.Singleton.FindResource("buttonStyleOffNight") as Style;
-                }
-                mw.Singleton.settingsArea.BorderBrush = new SolidColorBrush(Color.FromRgb(223, 223, 223));
+                mw.Singleton.settingsArea.BorderBrush = new SolidColorBrush(Color.FromRgb(225, 225, 240));
                 //images
                 mw.Singleton.dayNightButtonImage.Source = new BitmapImage(new Uri("Content/Images/moon.png", UriKind.Relative));
                 mw.Singleton.menuButtonImage.Source = new BitmapImage(new Uri("Content/Images/menuN.png", UriKind.Relative));
                 mw.Singleton.backButtonImage.Source = new BitmapImage(new Uri("Content/Images/returnN.png", UriKind.Relative));
                 mw.Singleton.exitButtonImage.Source = new BitmapImage(new Uri("Content/Images/exitN.png", UriKind.Relative));
+                mw.Singleton.hintButtonImage.Source = new BitmapImage(new Uri("Content/Images/hintN.png", UriKind.Relative));
+                mw.Singleton.credsButtonImage.Source = new BitmapImage(new Uri("Content/Images/credsN.png", UriKind.Relative));
             }
             else
             {
                 //changing the look of:
                 //backgrounds
-                mw.Singleton.windowGame.Background = new SolidColorBrush(Color.FromRgb(209, 209, 209));
-                mw.Singleton.settingsScrollViewer.Background = new SolidColorBrush(Color.FromRgb(185, 185, 185));
+                mw.Singleton.windowGame.Background = new SolidColorBrush(Color.FromRgb(225, 225, 240));
+                mw.Singleton.settingsScrollViewer.Background = new SolidColorBrush(Color.FromRgb(210, 210, 222));
                 //styles
                 mw.Singleton.statLine.Style = mw.Singleton.FindResource("textStyleDay") as Style;
                 mw.Singleton.dayNightButton.Style = mw.Singleton.FindResource("buttonStyleDay") as Style;
-                if (ai)
-                {
-                    mw.Singleton.aiButton.Style = mw.Singleton.FindResource("buttonStyleOnDay") as Style;
-                }
-                else
-                {
-                    mw.Singleton.aiButton.Style = mw.Singleton.FindResource("buttonStyleOffDay") as Style;
-                }
                 mw.Singleton.settingsArea.BorderBrush = new SolidColorBrush(Color.FromRgb(0,0,0));
                 //images
                 mw.Singleton.dayNightButtonImage.Source = new BitmapImage(new Uri("Content/Images/sun.png", UriKind.Relative));
                 mw.Singleton.menuButtonImage.Source = new BitmapImage(new Uri("Content/Images/menuD.png", UriKind.Relative));
                 mw.Singleton.backButtonImage.Source = new BitmapImage(new Uri("Content/Images/returnD.png", UriKind.Relative));
                 mw.Singleton.exitButtonImage.Source = new BitmapImage(new Uri("Content/Images/exitD.png", UriKind.Relative));
+                mw.Singleton.hintButtonImage.Source = new BitmapImage(new Uri("Content/Images/hintD.png", UriKind.Relative));
+                mw.Singleton.credsButtonImage.Source = new BitmapImage(new Uri("Content/Images/credsD.png", UriKind.Relative));
             }
         }
         #endregion
@@ -673,8 +691,6 @@ namespace tictactoe_forms
                 "inLineForWin",
                 inLineForWin.ToString(),
                 "darkMode",
-                "",
-                "ai",
                 ""
             };
             if (darkMode)
@@ -684,14 +700,6 @@ namespace tictactoe_forms
             else
             {
                 toWrite[17] = "0";
-            }
-            if (ai)
-            {
-                toWrite[19] = "1";
-            }
-            else
-            {
-                toWrite[19] = "0";
             }
             foreach (string x in toWrite)
             {
@@ -781,7 +789,6 @@ namespace tictactoe_forms
                 GridSideSize = 3;
                 InLineForWin = 3;
                 DarkMode = false;
-                Ai = false;
             }
         }
         #endregion

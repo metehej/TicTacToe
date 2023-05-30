@@ -9,9 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Content\Images\credsD.png" />
+    <None Remove="Content\Images\credsN.png" />
     <None Remove="Content\Images\cross.png" />
     <None Remove="Content\Images\exitD.png" />
     <None Remove="Content\Images\exitN.png" />
+    <None Remove="Content\Images\hintD.png" />
+    <None Remove="Content\Images\hintN.png" />
     <None Remove="Content\Images\menu.png" />
     <None Remove="Content\Images\menuD.png" />
     <None Remove="Content\Images\menuN.png" />
@@ -30,8 +34,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Content\Images\credsD.png" />
+    <Resource Include="Content\Images\credsN.png" />
     <Resource Include="Content\Images\exitD.png" />
     <Resource Include="Content\Images\exitN.png" />
+    <Resource Include="Content\Images\hintD.png" />
+    <Resource Include="Content\Images\hintN.png" />
     <Resource Include="Content\Images\menuD.png" />
     <Resource Include="Content\Images\menuN.png" />
     <Resource Include="Content\Images\moon.png" />
