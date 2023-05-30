@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 
@@ -35,7 +34,7 @@ namespace tictactoe_forms
         }
 
         //this file contains functions that are called by gui elements AND are almost entirely GUI related.
-        //functions that are both gui and program related are in Game.cs 
+        //rest of functions are in Game.cs
 
         #region Click events
         //handles button click

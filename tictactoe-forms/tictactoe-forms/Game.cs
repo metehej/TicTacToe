@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using mw = tictactoe_forms.MainWindow;
 
+//inside processes for TicTacToeMK
+
 namespace tictactoe_forms
 {
 
