@@ -483,7 +483,7 @@
                                     <!-- textbox style for name text boxes -->
                                     <Style x:Key="nameTextBox" TargetType="TextBox">
                                         <Setter Property="MaxLength" Value="12"/>
-                                        <Setter Property="Background" Value="#e1e1f0"/>
+                                        <Setter Property="Background" Value="#f3f3fa"/>
                                         <Setter Property="Foreground" Value="Black"/>
                                         <Setter Property="FontSize" Value="20"/>
                                         <Setter Property="FontWeight" Value="DemiBold"/>
@@ -496,12 +496,12 @@
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="BorderThickness" Value="0"/>
                                                 <Setter Property="FontSize" Value="22"/>
-                                                <Setter Property="Background" Value="#e1e1f0"/>
+                                                <Setter Property="Background" Value="#e9e9ff"/>
                                             </Trigger>
                                             <Trigger Property="IsFocused" Value="True">
                                                 <Setter Property="BorderThickness" Value="0"/>
                                                 <Setter Property="FontSize" Value="22"/>
-                                                <Setter Property="Background" Value="#e1e1f0"/>
+                                                <Setter Property="Background" Value="#cecee4"/>
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
