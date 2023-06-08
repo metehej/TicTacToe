@@ -13,9 +13,7 @@ namespace tictactoe_forms
     /// </summary>
     public partial class MainWindow : Window
     {
-#pragma warning disable CS8618
-        public static MainWindow Singleton;                             //for communication between MainWindow.xaml.cs and Game.cs
-#pragma warning restore CS8618
+        public static MainWindow? Singleton = null;                             //for communication between MainWindow.xaml.cs and Game.cs
         gameStatus gameInstance;                                        //creates a Game.cs object
         public MainWindow()
         {
@@ -136,16 +134,16 @@ namespace tictactoe_forms
             gameInstance.Defaults(false);
 
         }
-        //handles a click on all reset button
+        //handles a click on reset all button
         private void ResetAll_Button_Click(object sender, RoutedEventArgs e)
         {
             if (((Button)sender).Tag.ToString() != "popYes")
             {
-                popUpShow("Are you sure?", "This action will revert all pictures and settings to default. Do you wish to proceed?", new RoutedEventHandler(ResetAll_Button_Click));
+                PopUpShow("Are you sure?", "This action will revert all pictures and settings to default. Do you wish to proceed?", new RoutedEventHandler(ResetAll_Button_Click));
             }
             else
             {
-                popUpRemove();
+                PopUpRemove();
                 gameInstance.Defaults(true);
             }
         }
@@ -154,11 +152,11 @@ namespace tictactoe_forms
         {
             if (((Button)sender).Tag.ToString() != "popYes")
             {
-                popUpShow("Are you sure?", "This action will delete all saved files and will close the app. Do you wish to proceed?", new RoutedEventHandler(DeleteLocals_Button_Click));
+                PopUpShow("Are you sure?", "This action will delete all saved files and will close the app. Do you wish to proceed?", new RoutedEventHandler(DeleteLocals_Button_Click));
             }
             else
             {
-                popUpRemove();
+                PopUpRemove();
                 gameInstance.saveSettings = false;
                 if (Directory.Exists(Environment.GetEnvironmentVariable("appdata") + "\\TicTacToeMK"))
                 {
@@ -173,11 +171,11 @@ namespace tictactoe_forms
         {
             if(((Button)sender).Tag.ToString() == "Hint")
             {
-                popUpShow("Hint", string.Format("Players switch turns. They place their symbols in the grid, trying to put {0} of their symbols in row. the first one to succeed wins.", gameInstance.InLineForWin), null, "Ok");
+                PopUpShow("Hint", string.Format("Players switch turns. They place their symbols in the grid, trying to put {0} of their symbols in row. the first one to succeed wins.", gameInstance.InLineForWin), null, "Ok");
             }
             else
             {
-                popUpShow("Credits", "Author: Matěj Kretek\nMade for: Gymnázium a SPŠEI Frenštát pod Radhoštěm, p.o ", null, "Ok");
+                PopUpShow("Credits", "Author: Matěj Kretek\nMade for: Gymnázium a SPŠEI Frenštát pod Radhoštěm, p.o ", null, "Ok");
             }
         }
         #endregion
@@ -205,7 +203,7 @@ namespace tictactoe_forms
         {
             statLine.Text = ((FrameworkElement)sender).Tag.ToString();
         }
-        //handles mouse hovering off menu buttons
+        //handles mouse hovering off elements
         private void Element_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (Panel.GetZIndex(menuGrid) == 2)
@@ -247,12 +245,13 @@ namespace tictactoe_forms
         //handles click on No/eq button in popup
         private void Popup_No_Button_Click(object sender, RoutedEventArgs e)
         {
-            popUpRemove();
+            PopUpRemove();
         }
         //makes a popup
-        public void popUpShow(string header, string text, RoutedEventHandler? yesEvent,  string buttonRight = "No", string buttonLeft = "Yes")
+        public void PopUpShow(string header, string text, RoutedEventHandler? yesEvent,  string buttonRight = "No", string buttonLeft = "Yes")
         {
             popButtonGrid.Children.Clear();
+            //blurs background and puts popup window in front of all other
             BlurEffect blur = new();
             blur.Radius = 10;
             blur.KernelType = KernelType.Gaussian;
@@ -262,6 +261,7 @@ namespace tictactoe_forms
             popGrid.Background = new SolidColorBrush(Color.FromArgb(136, 10, 10, 10));
             popHeader.Text = header;
             popContent.Text = text;
+            //creates a no button
             Button button = new Button();
             button.Click += new RoutedEventHandler(Popup_No_Button_Click);
             button.SetValue(Grid.RowProperty, 1);
@@ -271,6 +271,7 @@ namespace tictactoe_forms
             button.Height = 40;
             button.Content = buttonRight;
             popButtonGrid.Children.Add(button);
+            //creates a yes button and gives it the handler passed from calling function
             if (yesEvent != null)
             {
                 button = new Button();
@@ -287,7 +288,7 @@ namespace tictactoe_forms
             }   
         }
         //removes the popup 
-        public void popUpRemove()
+        public void PopUpRemove()
         {
             mainGrid.Effect = null;
             menuGrid.Effect = null;

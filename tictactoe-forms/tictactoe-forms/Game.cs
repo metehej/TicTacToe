@@ -31,11 +31,12 @@ namespace tictactoe_forms
         private string p1Name = "Player 1", p2Name = "Player 2", currentTime = "placeholder";        
                                                                         //names of players, stopwatch time
         private string statLine = "placeholder";                        //for storing text from statline when writing something temporary over it
-        public DispatcherTimer dt = new();
-        public Stopwatch sw = new();
+
+        public DispatcherTimer dt = new();                              //dispatcher timer for stopwatch
+        public Stopwatch sw = new();                                    //for gathering the time difference from dispatcherTimer
 
         public Binding statLineBinding = new("StatLine");               //binding for statLine element
-        public bool saveSettings = true;
+        public bool saveSettings = true;                                //boolean telling if the program should save settings to a local file
 
         //styles for buttons used in RedrawingPlayfield()
         Style? stylecan;
@@ -258,7 +259,7 @@ namespace tictactoe_forms
             styleown = mw.Singleton.gameGrid.FindResource("playButtonOwns") as Style;
 
             //initializing game grid
-            gridStatus = GridInitializer(gridSideSize);
+            gridStatus = GridInitializer();
 
             //redrawing the ui according to defaults
             RedrawingPlayfield();
@@ -283,17 +284,17 @@ namespace tictactoe_forms
             }
         }
         //creates the game grid
-        public int[,] GridInitializer(int size)
+        public int[,] GridInitializer()
         {
             //deletes residual children
             mw.Singleton.playAreaGrid.Children.Clear();
-            mw.Singleton.playAreaGrid.Rows = size;
-            mw.Singleton.playAreaGrid.Columns = size;
+            mw.Singleton.playAreaGrid.Rows = gridSideSize;
+            mw.Singleton.playAreaGrid.Columns = gridSideSize;
 
             //creating a var containing a name for the image
             string imageName = "btnImage";
 
-            for (int i = 0; i < Math.Pow(size, 2); i++)
+            for (int i = 0; i < Math.Pow(gridSideSize, 2); i++)
             {
                 //creating a button with the style
                 Button button = new() { Style = stylecan };
@@ -302,11 +303,11 @@ namespace tictactoe_forms
                 //assigning a tag to the button
                 button.Tag = i;
                 //creating an image
-                Image image = new() { Source = p0Image, Stretch = Stretch.UniformToFill, Margin = new Thickness((16-size)/4.3), Name = imageName + i.ToString() };
+                Image image = new() { Source = p0Image, Stretch = Stretch.UniformToFill, Margin = new Thickness((16-gridSideSize)/4.3), Name = imageName + i.ToString() };
                 button.Content = image; //adds the image to the button
                 mw.Singleton.playAreaGrid.Children.Add(button); //adds the button to the grid
             }
-            return new int[size, size];
+            return new int[gridSideSize, gridSideSize];
         }
         #endregion
 
@@ -526,7 +527,7 @@ namespace tictactoe_forms
         public async void Restarting()
         {
             //resetting grid by changing all its values to zero
-            gridStatus = GridInitializer(gridSideSize);
+            gridStatus = GridInitializer();
             //choosing starting player
             lastTurnPlayer = lastTurnPlayer * 2 % 3;
             turnPlayer = lastTurnPlayer;
